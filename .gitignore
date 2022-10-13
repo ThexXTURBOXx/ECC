@@ -1,0 +1,11 @@
+# CMake
+cmake-build-debug/
+.cmake/
+
+# IDEs
+.vscode/
+.idea/
+
+# CoCoALib related files
+cocoalib/**
+!cocoalib/.gitkeep
