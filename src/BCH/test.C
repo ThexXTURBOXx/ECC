@@ -1,4 +1,5 @@
 #include "CoCoA/library.H"
+#include "bch.C"
 
 using namespace std;
 
@@ -10,18 +11,15 @@ const string description =
 namespace CoCoA {
 
     void example() {
-        cout << "Hello world" << endl;
-
-        auto R = NewPolyRing(RingZZ(), symbols("x"));
-        auto f = RingElem(R, "x^2-5");
-        cout << IsLRSDegenerate(f) << endl;
+        test();
     }
 
-// DO NOT EDIT LINES BELOW HERE
+    // DO NOT EDIT LINES BELOW HERE
 
     void program() {
-        GlobalManager CoCoAFoundations;
-        SignalWatcher MonitorInterrupt(SIGINT); // you must also call CheckForInterrupt every so often
+        GlobalManager CoCoAFoundations(UseNonNegResidues);
+        SignalWatcher MonitorInterrupt(
+                SIGINT); // you must also call CheckForInterrupt every so often
 
         cout << description << endl;
         cout << boolalpha; // so that bools print out as true/false

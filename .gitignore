@@ -1,6 +1,7 @@
 # CMake
 cmake-build-debug/
 .cmake/
+build/
 
 # IDEs
 .vscode/
