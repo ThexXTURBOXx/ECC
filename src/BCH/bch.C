@@ -1,5 +1,4 @@
 #include <numeric>
-#include "../util/utils.C"
 #include "CoCoA/library.H"
 
 using namespace std;
@@ -33,12 +32,11 @@ namespace CoCoA {
         const RingElem alpha = indet(Fpx, 0);
         const RingElem x = indet(Fpx, 1);
         const RingElem r = RingElem(Fpx, f);
-        ideal I(r);
-        RingElem ret = one(Fpx);
+        const ideal I(r);
 
-        for (long i = c; i <= c + d - 2; ++i) {
+        RingElem ret = one(Fpx);
+        for (long i = c; i <= c + d - 2; ++i)
             ret = lcm(ret, MinPolyQuot(power(alpha, i), I, x));
-        }
         return ret;
     }
 
@@ -58,9 +56,8 @@ namespace CoCoA {
                 const long currPower = i - qn + 1;
                 rootPowers.push_back(currPower % (qn - 1));
             }
-            for (long j = 0; j <= n; ++j) {
+            for (long j = 0; j <= n; ++j)
                 b[j] *= power(a, j);
-            }
         }
         return rootPowers;
     }
@@ -68,7 +65,7 @@ namespace CoCoA {
     // From Jungnickel
     RingElem PetersonGorensteinZierler(const BCH &bch, ConstRefRingElem p,
                                        ConstRefRingElem x,
-                                       const vector <RingElem> &s, long v) {
+                                       const vector<RingElem> &s, long v) {
         const ring &Px = owner(p);
 
         if (all_of(s.cbegin(), s.cend(),
@@ -76,11 +73,9 @@ namespace CoCoA {
             return zero(Px);
 
         matrix M = NewDenseMat(Px, v, v);
-        for (long i = 0; i < v; i++) {
-            for (long j = 0; j < v; j++) {
-                M->mySetEntry(i, j, s[i + j]);
-            }
-        }
+        for (long i = 0; i < v; i++)
+            for (long j = 0; j < v; j++)
+                SetEntry(M, i, j, s[i + j]);
 
         bool zd;
         do {
@@ -93,38 +88,36 @@ namespace CoCoA {
 
         const long w = v + 1;
         matrix V = NewDenseMat(Px, w, 1);
-        for (long i = 0; i < w; i++) {
-            V->mySetEntry(i, 0, s[w + i]);
-        }
+        for (long i = 0; i < w; i++)
+            SetEntry(V, i, 0, s[w + i]);
 
-        matrix P = -inverse(M) * V;
+        // Sadly NYI: const matrix P = LinSolve(M, -V);
+        const matrix P = -inverse(M) * V;
 
         RingElem ret = one(Px);
-        for (long i = 0; i < w; i++) {
-            ret += P->myEntry(w - i - 1, 0) * power(x, i + 1);
-        }
+        for (long i = 0; i < w; i++)
+            ret += P(w - i - 1, 0) * power(x, i + 1);
         return ret;
     }
 
-    RingElem Forney(const BCH &bch, const vector <RingElem> &s,
+    RingElem Forney(const BCH &bch, const vector<RingElem> &s,
                     ConstRefRingElem e, const vector<long> &roots,
                     ConstRefRingElem x) {
         const ring &Px = owner(e);
 
         RingElem S = zero(Px);
-        for (long i = 0; i < s.size(); i++) {
+        for (long i = 0; i < s.size(); i++)
             S += s[i] * power(x, i);
-        }
 
         const RingElem O = NR(S * e, {power(x, bch.d - 1)});
         const RingElem ed = deriv(e, x);
 
         RingElem ret = zero(Px);
         for (long k: roots) {
-            const RingHom phi = PolyAlgebraHom(
+            const RingHom eval = PolyAlgebraHom(
                     Px, Px, {power(bch.a, k)});
-            ret += -power(x, -k) * (power(bch.a, -k) * phi(O))
-                   / (power(bch.a, -bch.c * k) * phi(ed));
+            ret += -power(x, -k) * (power(bch.a, -k) * eval(O))
+                   / (power(bch.a, -bch.c * k) * eval(ed));
         }
         return ret;
     }
@@ -142,9 +135,9 @@ namespace CoCoA {
         // Calculate syndromes
         vector<RingElem> s(bch.d - 1, zero(Px));
         for (long j = 0; j <= bch.d - 2; j++) {
-            const RingHom phi = PolyAlgebraHom(
+            const RingHom eval = PolyAlgebraHom(
                     Px, Px, {power(bch.a, bch.c + j)});
-            s[j] = phi(p);
+            s[j] = eval(p);
         }
 
         // Calculate error locator polynomial using the
@@ -153,123 +146,18 @@ namespace CoCoA {
         if (IsZero(e)) return p;
 
         // Factor error locator polynomial using Chien Search
-        vector<long> roots = ChienSearch(e, bch.a, bch.qn, x);
+        const vector<long> roots = ChienSearch(e, bch.a, bch.qn, x);
         if (roots.empty()) return p;
 
         // Calculate error values using Forney's algorithm and correct errors
         if (bch.q == 2) {
             RingElem f = p;
-            for (long j: roots) {
+            for (long j: roots)
                 f -= power(x, -j);
-            }
             return f;
         } else {
             return p - Forney(bch, s, e, roots, x);
         }
-    }
-
-    void test() {
-        cout << constructGenPoly(1, 7, 2, "alpha^4+alpha+1") << endl;
-        cout << constructGenPoly(1, 5, 3, "alpha^2+alpha+2") << endl;
-
-        // Setup
-
-        // F_(2^q)[x]
-        PolyRing Px = NewPolyRing(NewZZmod(2), symbols("alpha"));
-        ideal I(RingElem(Px, "alpha^4+alpha+1"));
-        PolyRing Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-        RingElem x = RingElem(Rx, "x");
-
-        // BCH code from QR-codes
-        // n = 15: length of codewords in the code
-        // k = 5: amount of information bits in codeword (input length)
-        long q = 2;
-        long qn = SmallPower(q, 4);
-        long n = 15;
-        long k = 5;
-        long d = 7;
-        long c = 1;
-        RingElem a(Rx, "alpha");
-        RingElem g = toPolynomial("10100110111", n - k + 1, x);
-        BCH bch(q, qn, n, k, d, c, a, g);
-
-        // Encode
-
-        // Example word to encode
-        RingElem p = toPolynomial("11011", k, x);
-
-        // Non-systematic encoding
-        cout << toString(g * p, n, x) << endl;
-
-        // Systematic encoding
-        cout << toString(p * power(x, n - k), n, x) << endl;
-        RingElem sent = encode(bch, p, x);
-        cout << toString(sent, n, x) << endl;
-
-        // Decoding
-
-        RingElem recv1 = sent;
-        RingElem recv2 = sent + power(x, 2);
-        RingElem recv3 = sent + power(x, 13) + power(x, 5);
-        RingElem recv4 = sent + power(x, 8) + power(x, 2) + 1;
-
-        cout << "---" << endl;
-
-        RingElem dec1 = decode(bch, recv1, x);
-        RingElem dec2 = decode(bch, recv2, x);
-        RingElem dec3 = decode(bch, recv3, x);
-        RingElem dec4 = decode(bch, recv4, x);
-
-        cout << toString(dec1, n, x) << endl;
-        cout << toString(dec2, n, x) << endl;
-        cout << toString(dec3, n, x) << endl;
-        cout << toString(dec4, n, x) << endl;
-
-
-        cout << "=============================" << endl;
-
-
-        // 97-Article%20Text-328-1-10-20180907.pdf
-        // Setup
-
-        Px = NewPolyRing(NewZZmod(3), symbols("alpha"));
-        I = ideal(RingElem(Px, "alpha^2+alpha+2"));
-        Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-        x = RingElem(Rx, "x");
-
-        // Example ternary BCH Code
-        q = 3;
-        qn = SmallPower(3, 2);
-        n = 8;
-        k = 3;
-        a = RingElem(Rx, "alpha");
-        d = 5;
-        c = 1;
-        g = toPolynomial("121102", n - k + 1, x);
-        BCH bch2(q, qn, n, k, d, c, a, g);
-
-        // Encode
-
-        // Example word to encode
-        p = toPolynomial("201", k, x);
-        sent = encode(bch2, p, x);
-        cout << toString(sent, n, x) << endl;
-
-        // Decoding
-
-        recv1 = sent;
-        recv2 = sent + 2 * power(x, 2);
-        recv3 = sent + power(x, 5) + 1;
-
-        cout << "---" << endl;
-
-        dec1 = decode(bch2, recv1, x);
-        dec2 = decode(bch2, recv2, x);
-        dec3 = decode(bch2, recv3, x);
-
-        cout << toString(dec1, n, x) << endl;
-        cout << toString(dec2, n, x) << endl;
-        cout << toString(dec3, n, x) << endl;
     }
 
 }

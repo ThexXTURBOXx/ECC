@@ -8,4 +8,6 @@ find_library(COCOA_LIBRARY NAMES CoCoA cocoa REQUIRED)
 add_library(util src/util/utils.C)
 add_executable(BCH src/BCH/test.C)
 
+include_directories(include)
+
 target_link_libraries(BCH PRIVATE ${COCOA_LIBRARY} util -lgmp)
