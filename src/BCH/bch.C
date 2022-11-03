@@ -1,26 +1,10 @@
 #include <numeric>
 #include "CoCoA/library.H"
+#include "ecc/bch.H"
 
 using namespace std;
 
 namespace CoCoA {
-
-    struct BCH {
-        const long q;
-        const long qn;
-        const long n;
-        const long k;
-        const long d;
-        const long c;
-        const RingElem a;
-        const RingElem g;
-
-        BCH(const long q, const long qn, const long n, const long k,
-            const long d, const long c, RingElem a, RingElem g)
-                : q(q), qn(qn), n(n), k(k), d(d), c(c),
-                  a(std::move(a)), g(std::move(g)) {
-        }
-    };
 
     // d = Designed distance
     // f = Primitive polynomial, dependent on "alpha"

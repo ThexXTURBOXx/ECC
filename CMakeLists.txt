@@ -5,9 +5,15 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_library(COCOA_LIBRARY NAMES CoCoA cocoa REQUIRED)
 
+# Util libraries
 add_library(util src/util/utils.C)
-add_executable(BCH src/BCH/test.C)
+
+# ECCs
+add_library(BCH src/bch/bch.C)
+
+# Executables
+add_executable(test src/test/test.C)
 
 include_directories(include)
 
-target_link_libraries(BCH PRIVATE ${COCOA_LIBRARY} util -lgmp)
+target_link_libraries(test PRIVATE ${COCOA_LIBRARY} util BCH -lgmp)

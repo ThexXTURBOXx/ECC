@@ -1,8 +1,9 @@
 #include "CoCoA/library.H"
-#include "utils.H"
-#include "bch.C"
+#include "util/utils.H"
+#include "ecc/bch.H"
 
 using namespace std;
+
 //----------------------------------------------------------------------
 const string description = "This file provides simple examples of BCH-Codes.\n";
 //----------------------------------------------------------------------
@@ -117,8 +118,7 @@ namespace CoCoA {
 
     void program() {
         GlobalManager CoCoAFoundations(UseNonNegResidues);
-        SignalWatcher MonitorInterrupt(
-                SIGINT); // you must also call CheckForInterrupt every so often
+        SignalWatcher MonitorInterrupt(SIGINT); // you must also call CheckForInterrupt every so often
 
         cout << description << endl;
         cout << boolalpha; // so that bools print out as true/false
@@ -132,23 +132,19 @@ int main() {
     try {
         CoCoA::program();
         return 0;
-    }
-    catch (const CoCoA::InterruptReceived &intr) {
+    } catch (const CoCoA::InterruptReceived &intr) {
         cerr << endl
              << "------------------------------" << endl
              << ">>>  CoCoALib interrupted  <<<" << endl
              << "------------------------------" << endl
              << "-->>  " << intr << "  <<--" << endl;
         return 2;
-    }
-    catch (const CoCoA::ErrorInfo &err) {
+    } catch (const CoCoA::ErrorInfo &err) {
         cerr << "***ERROR***  UNCAUGHT CoCoA error";
         ANNOUNCE(cerr, err);
-    }
-    catch (const std::exception &exc) {
+    } catch (const std::exception &exc) {
         cerr << "***ERROR***  UNCAUGHT std::exception: " << exc.what() << endl;
-    }
-    catch (...) {
+    } catch (...) {
         cerr << "***ERROR***  UNCAUGHT UNKNOWN EXCEPTION" << endl;
     }
 
