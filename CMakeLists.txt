@@ -10,10 +10,11 @@ add_library(util src/util/utils.C)
 
 # ECCs
 add_library(BCH src/BCH/bch.C)
+add_library(RM src/RM/rm.C)
 
 # Executables
 add_executable(test src/test/test.C)
 
 include_directories(include)
 
-target_link_libraries(test PRIVATE ${COCOA_LIBRARY} util BCH -lgmp)
+target_link_libraries(test PRIVATE ${COCOA_LIBRARY} util BCH RM -lgmp)

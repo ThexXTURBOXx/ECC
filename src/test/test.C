@@ -1,6 +1,7 @@
 #include "CoCoA/library.H"
 #include "util/utils.H"
 #include "ecc/bch.H"
+#include "ecc/rm.H"
 
 using namespace std;
 
@@ -114,6 +115,11 @@ namespace CoCoA {
         cout << toString(dec1, n, x) << endl;
         cout << toString(dec2, n, x) << endl;
         cout << toString(dec3, n, x) << endl;
+
+        cout << endl << endl << endl;
+        cout << "========================== RM ==========================" << endl << endl;
+
+        cout << RM(2, 4) << endl;
     }
 
     // DO NOT EDIT LINES BELOW HERE
