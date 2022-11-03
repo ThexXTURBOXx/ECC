@@ -9,7 +9,7 @@ find_library(COCOA_LIBRARY NAMES CoCoA cocoa REQUIRED)
 add_library(util src/util/utils.C)
 
 # ECCs
-add_library(BCH src/bch/bch.C)
+add_library(BCH src/BCH/bch.C)
 
 # Executables
 add_executable(test src/test/test.C)

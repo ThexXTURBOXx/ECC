@@ -11,8 +11,10 @@ const string description = "This file provides simple examples of BCH-Codes.\n";
 namespace CoCoA {
 
     void example() {
-        cout << constructGenPoly(1, 7, 2, "alpha^4+alpha+1") << endl;
-        cout << constructGenPoly(1, 5, 3, "alpha^2+alpha+2") << endl;
+        cout << "========================== BCH ==========================" << endl << endl;
+
+        cout << bchGenPoly(1, 7, 2, "alpha^4+alpha+1") << endl;
+        cout << bchGenPoly(1, 5, 3, "alpha^2+alpha+2") << endl;
 
         // Setup
 
@@ -45,7 +47,7 @@ namespace CoCoA {
 
         // Systematic encoding
         cout << toString(p * power(x, n - k), n, x) << endl;
-        RingElem sent = encode(bch, p, x);
+        RingElem sent = encodeBCH(bch, p, x);
         cout << toString(sent, n, x) << endl;
 
         // Decoding
@@ -57,10 +59,10 @@ namespace CoCoA {
 
         cout << "---" << endl;
 
-        RingElem dec1 = decode(bch, recv1, x);
-        RingElem dec2 = decode(bch, recv2, x);
-        RingElem dec3 = decode(bch, recv3, x);
-        RingElem dec4 = decode(bch, recv4, x);
+        RingElem dec1 = decodeBCH(bch, recv1, x);
+        RingElem dec2 = decodeBCH(bch, recv2, x);
+        RingElem dec3 = decodeBCH(bch, recv3, x);
+        RingElem dec4 = decodeBCH(bch, recv4, x);
 
         cout << toString(dec1, n, x) << endl;
         cout << toString(dec2, n, x) << endl;
@@ -94,7 +96,7 @@ namespace CoCoA {
 
         // Example word to encode
         p = toPolynomial("201", k, x);
-        sent = encode(bch2, p, x);
+        sent = encodeBCH(bch2, p, x);
         cout << toString(sent, n, x) << endl;
 
         // Decoding
@@ -105,9 +107,9 @@ namespace CoCoA {
 
         cout << "---" << endl;
 
-        dec1 = decode(bch2, recv1, x);
-        dec2 = decode(bch2, recv2, x);
-        dec3 = decode(bch2, recv3, x);
+        dec1 = decodeBCH(bch2, recv1, x);
+        dec2 = decodeBCH(bch2, recv2, x);
+        dec3 = decodeBCH(bch2, recv3, x);
 
         cout << toString(dec1, n, x) << endl;
         cout << toString(dec2, n, x) << endl;
