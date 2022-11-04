@@ -1,3 +1,4 @@
+#include <cstring>
 #include "CoCoA/library.H"
 #include "util/utils.H"
 #include "ecc/bch.H"
@@ -6,12 +7,12 @@
 using namespace std;
 
 //----------------------------------------------------------------------
-const string description = "This file provides simple examples of BCH-Codes.\n";
+const string description = "This file provides simple examples of ECCs.\n";
 //----------------------------------------------------------------------
 
 namespace CoCoA {
 
-    void example() {
+    void testBCH() {
         cout << "========================== BCH ==========================" << endl << endl;
 
         cout << bchGenPoly(1, 7, 2, "alpha^4+alpha+1") << endl;
@@ -115,30 +116,57 @@ namespace CoCoA {
         cout << toString(dec1, n, x) << endl;
         cout << toString(dec2, n, x) << endl;
         cout << toString(dec3, n, x) << endl;
+    }
 
-        cout << endl << endl << endl;
+    void testRM() {
         cout << "========================== RM ==========================" << endl << endl;
 
-        cout << RM(2, 4) << endl;
+        cout << RM(4, 7) << endl;
+    }
+
+    void example(const int argc, const char *argv[]) {
+        bool all = false, bch = false, rm = false;
+
+        if (argc <= 1) {
+            all = true;
+        } else {
+            for (int i = 1; i < argc; i++) {
+                const char *arg = argv[i];
+                if (strcmp(arg, "bch") == 0) {
+                    bch = true;
+                } else if (strcmp(arg, "rm") == 0) {
+                    rm = true;
+                }
+            }
+        }
+
+        if (all || bch) {
+            cout << endl << endl << endl;
+            testBCH();
+        }
+        if (all || rm) {
+            cout << endl << endl << endl;
+            testRM();
+        }
     }
 
     // DO NOT EDIT LINES BELOW HERE
 
-    void program() {
+    void program(const int argc, const char *argv[]) {
         GlobalManager CoCoAFoundations(UseNonNegResidues);
         SignalWatcher MonitorInterrupt(SIGINT); // you must also call CheckForInterrupt every so often
 
         cout << description << endl;
         cout << boolalpha; // so that bools print out as true/false
 
-        example();
+        example(argc, argv);
     }
 
 }
 
-int main() {
+int main(const int argc, const char *argv[]) {
     try {
-        CoCoA::program();
+        CoCoA::program(argc, argv);
         return 0;
     } catch (const CoCoA::InterruptReceived &intr) {
         cerr << endl
