@@ -21,6 +21,8 @@ namespace CoCoA {
 
         const ConstMatrixView R = RM(Fp, r, m - 1);
         const ConstMatrixView S = RM(Fp, r - 1, m - 1);
+
+        // NYI: return NewDenseMat(BlockMat2x2(R, R, zeroes, S));
         const long c = NumCols(R);
         const long l = NumRows(S);
         return NewDenseMat(BlockMat2x2(R, R, ZeroMat(Fp, l, c), S));
