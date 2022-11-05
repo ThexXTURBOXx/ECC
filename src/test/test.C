@@ -2,6 +2,7 @@
 #include "CoCoA/library.H"
 #include "util/utils.H"
 #include "ecc/bch.H"
+#include "ecc/ham.H"
 #include "ecc/rm.H"
 
 using namespace std;
@@ -118,6 +119,55 @@ namespace CoCoA {
         cout << toString(dec3, n, x) << endl;
     }
 
+    void testHam() {
+        cout << "========================== Ham ==========================" << endl << endl;
+
+        const Ham ham(3, 2);
+        cout << ham.H << endl;
+        cout << ham.G << endl;
+        const RingElem O = zero(ham.R);
+        const RingElem I = one(ham.R);
+        const matrix w = NewDenseMat(RowMat({O, O, O, I}));
+        const matrix u = encodeHam(ham, w);
+        cout << u << endl;
+        cout << decodeHam(ham, u) << endl;
+        cout << decodeHam(ham, u + RowMat({O, O, I, O, O, O, O})) << endl;
+        cout << decodeHam(ham, u + RowMat({O, O, O, O, I, O, O})) << endl;
+        cout << decodeHam(ham, u + RowMat({O, I, O, O, O, I, O})) << endl;
+
+        const Ham ham2(3, 3);
+        cout << ham2.H << endl;
+        cout << ham2.G << endl;
+        const RingElem O2 = zero(ham2.R);
+        const RingElem I2 = one(ham2.R);
+        const RingElem Z2 = 2 * I2;
+        const matrix w2 = NewDenseMat(RowMat({O2, Z2, I2, O2, Z2, I2, O2, O2, O2, O2}));
+        const matrix u2 = encodeHam(ham2, w2);
+        cout << u2 << endl;
+        cout << decodeHam(ham2, u2) << endl;
+        cout << decodeHam(ham2, u2 + RowMat({O2, O2, Z2, O2, O2, O2, O2, O2, O2, O2, O2, O2, O2})) << endl;
+        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, Z2, O2, O2, O2, O2, O2, O2})) << endl;
+        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, O2, I2, O2, O2, O2, O2, O2})) << endl;
+        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, Z2, I2, O2, O2, O2, O2, O2})) << endl;
+
+        const Ham ham3(2, 5);
+        cout << ham3.H << endl;
+        cout << ham3.G << endl;
+        const RingElem O3 = zero(ham3.R);
+        const RingElem I3 = one(ham3.R);
+        const RingElem Z3 = 2 * I3;
+        const RingElem E3 = 3 * I3;
+        const RingElem A3 = 4 * I3;
+        const matrix w3 = NewDenseMat(RowMat({E3, A3, I3, O3}));
+        const matrix u3 = encodeHam(ham3, w3);
+        cout << u3 << endl;
+        cout << decodeHam(ham3, u3) << endl;
+        cout << decodeHam(ham3, u3 + RowMat({E3, O3, O3, O3, O3, O3})) << endl;
+        cout << decodeHam(ham3, u3 + RowMat({O3, O3, O3, O3, O3, I3})) << endl;
+        cout << decodeHam(ham3, u3 + RowMat({O3, O3, A3, O3, O3, O3})) << endl;
+        cout << decodeHam(ham3, u3 + RowMat({O3, O3, Z3, O3, E3, O3})) << endl;
+    }
+
     void testRM() {
         cout << "========================== RM ==========================" << endl << endl;
 
@@ -125,7 +175,7 @@ namespace CoCoA {
     }
 
     void example(const int argc, const char *argv[]) {
-        bool all = false, bch = false, rm = false;
+        bool all = false, bch = false, ham = false, rm = false;
 
         if (argc <= 1) {
             all = true;
@@ -134,6 +184,8 @@ namespace CoCoA {
                 const char *arg = argv[i];
                 if (strcmp(arg, "bch") == 0) {
                     bch = true;
+                } else if (strcmp(arg, "ham") == 0) {
+                    ham = true;
                 } else if (strcmp(arg, "rm") == 0) {
                     rm = true;
                 }
@@ -143,6 +195,10 @@ namespace CoCoA {
         if (all || bch) {
             cout << endl << endl << endl;
             testBCH();
+        }
+        if (all || ham) {
+            cout << endl << endl << endl;
+            testHam();
         }
         if (all || rm) {
             cout << endl << endl << endl;

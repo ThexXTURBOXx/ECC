@@ -18,6 +18,8 @@ namespace CoCoA {
 
     string toString(ConstRefRingElem p, long n, ConstRefRingElem x);
 
+    vector <vector<long>> tuples(const vector<long> &set, long tupleSize);
+
 }
 
 #endif //ECC_UTILS_H

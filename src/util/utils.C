@@ -53,4 +53,24 @@ namespace CoCoA {
         return str;
     }
 
+    vector<vector<long>> tuples(const vector<long> &set, const long tupleSize) {
+        vector<vector<long>> result;
+
+        const long maxValue = SmallPower(set.size(), tupleSize);
+        for (unsigned long counter = 0; counter < maxValue; counter++) {
+            vector<long> tuple(tupleSize);
+
+            unsigned long currentValue = counter;
+            for (long i = 0; i < tupleSize; i++) {
+                unsigned long digit = currentValue % set.size();
+                tuple[tupleSize - i - 1] = set[digit];
+                currentValue /= set.size();
+            }
+
+            result.push_back(tuple);
+        }
+
+        return result;
+    }
+
 }
