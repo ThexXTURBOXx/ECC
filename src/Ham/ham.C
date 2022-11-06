@@ -34,17 +34,16 @@ namespace CoCoA {
         return false;
     }
 
-    vector<RingElem> mult(const long a, const vector<RingElem> &L) {
-        vector<RingElem> ret;
-        ret.reserve(L.size());
-        transform(L.cbegin(), L.cend(), back_inserter(ret),
-                  [a](const auto &l) { return a * l; });
-        return ret;
+    bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, const long c) {
+        for (size_t i = 0; i < a.size(); ++i) {
+            if (a[i] != c * b[i]) return false;
+        }
+        return true;
     }
 
-    long isMultiple(const long q, const vector<RingElem> &a, const vector<RingElem> &b) {
+    long divide(const vector<RingElem> &a, const vector<RingElem> &b, const long q) {
         for (long i = 1; i <= q; ++i) {
-            if (mult(i, a) == b) return i;
+            if (isMultiple(a, b, i)) return i;
         }
         return 0;
     }
@@ -67,7 +66,7 @@ namespace CoCoA {
                           [R](const auto &t) { return RingElem(R, t); });
 
                 if (none_of(cols.cbegin(), cols.cend(),
-                            [q, n](const auto &c) { return isMultiple(q, c, n); })) {
+                            [q, n](const auto &c) { return divide(n, c, q); })) {
                     cols.push_back(n);
                 }
             }
@@ -93,7 +92,7 @@ namespace CoCoA {
 
         const vector<RingElem> Svec = GetCol(S, 0);
         for (long i = 0; i < ham.n; ++i) {
-            const long b = isMultiple(ham.q, GetCol(ham.H, i), Svec);
+            const long b = divide(Svec, GetCol(ham.H, i), ham.q);
             if (b != 0) return w - e(ham, i, RingElem(ham.R, b));
         }
         CoCoA_THROW_ERROR("Cannot decode!", "Ham");
