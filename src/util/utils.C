@@ -6,7 +6,7 @@ using namespace std;
 namespace CoCoA {
 
     template<class T>
-    RingElem getOr(vector<T> vec, size_t i, T defaultVal) {
+    RingElem getOr(const vector<T> &vec, size_t i, T defaultVal) {
         if (i >= vec.size()) return defaultVal;
         return vec[i];
     }
@@ -31,12 +31,22 @@ namespace CoCoA {
         return ' '; // Shut up compiler warnings
     }
 
-    RingElem toPolynomial(const string &str, const long k, ConstRefRingElem x) {
+    RingElem toPolynomial(const string &str, ConstRefRingElem x) {
+        const long k = (long) str.size();
         RingElem poly = zero(owner(x));
         for (long i = 0; i < k; ++i) {
             poly += parseNum(str[i]) * power(x, k - i - 1);
         }
         return poly;
+    }
+
+    matrix toMatrix(const string &str, const ring &R) {
+        const long k = (long) str.size();
+        matrix m = NewDenseMat(R, 1, k);
+        for (long i = 0; i < k; ++i) {
+            SetEntry(m, 0, i, parseNum(str[i]));
+        }
+        return m;
     }
 
     string toString(ConstRefRingElem p, const long n, ConstRefRingElem x) {
@@ -53,12 +63,26 @@ namespace CoCoA {
         return str;
     }
 
-    vector<vector<long>> tuples(const vector<long> &set, const long tupleSize) {
-        vector<vector<long>> result;
+    string toString(const matrix &m) {
+        const long n = NumCols(m);
+        string str;
+        long buf;
+        for (long i = n - 1; i >= 0; --i) {
+            if (!IsConvertible(buf, m(0, i))) {
+                CoCoA_THROW_ERROR("Invalid coefficient!", __func__);
+            }
+            str += toChar(buf);
+        }
+        return str;
+    }
+
+    template<class T>
+    vector<vector<T>> tuples(const vector<T> &set, const long tupleSize) {
+        vector<vector<T>> result;
 
         const long maxValue = SmallPower(set.size(), tupleSize);
         for (unsigned long counter = 0; counter < maxValue; counter++) {
-            vector<long> tuple(tupleSize);
+            vector<T> tuple(tupleSize);
 
             unsigned long currentValue = counter;
             for (long i = 0; i < tupleSize; i++) {
@@ -72,5 +96,8 @@ namespace CoCoA {
 
         return result;
     }
+
+    // Explicitly generate template function to avoid linker errors
+    template vector<vector<long>> tuples<long>(const vector<long> &, const long);
 
 }

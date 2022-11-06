@@ -37,13 +37,13 @@ namespace CoCoA {
         long d = 7;
         long c = 1;
         RingElem a(Rx, "alpha");
-        RingElem g = toPolynomial("10100110111", n - k + 1, x);
+        RingElem g = toPolynomial("10100110111", x);
         BCH bch(q, qn, n, k, d, c, a, g);
 
         // Encode
 
         // Example word to encode
-        RingElem p = toPolynomial("11011", k, x);
+        RingElem p = toPolynomial("11011", x);
 
         // Non-systematic encoding
         cout << toString(g * p, n, x) << endl;
@@ -92,13 +92,13 @@ namespace CoCoA {
         a = RingElem(Rx, "alpha");
         d = 5;
         c = 1;
-        g = toPolynomial("121102", n - k + 1, x);
+        g = toPolynomial("121102", x);
         BCH bch2(q, qn, n, k, d, c, a, g);
 
         // Encode
 
         // Example word to encode
-        p = toPolynomial("201", k, x);
+        p = toPolynomial("201", x);
         sent = encodeBCH(bch2, p, x);
         cout << toString(sent, n, x) << endl;
 
@@ -127,45 +127,37 @@ namespace CoCoA {
         cout << ham.G << endl;
         const RingElem O = zero(ham.R);
         const RingElem I = one(ham.R);
-        const matrix w = NewDenseMat(RowMat({O, O, O, I}));
+        const matrix w = toMatrix("0001", ham.R);
         const matrix u = encodeHam(ham, w);
-        cout << u << endl;
-        cout << decodeHam(ham, u) << endl;
-        cout << decodeHam(ham, u + RowMat({O, O, I, O, O, O, O})) << endl;
-        cout << decodeHam(ham, u + RowMat({O, O, O, O, I, O, O})) << endl;
-        cout << decodeHam(ham, u + RowMat({O, I, O, O, O, I, O})) << endl;
+        cout << toString(u) << endl;
+        cout << toString(decodeHam(ham, u)) << endl;
+        cout << toString(decodeHam(ham, u + toMatrix("0010000", ham.R))) << endl;
+        cout << toString(decodeHam(ham, u + toMatrix("0000100", ham.R))) << endl;
+        cout << toString(decodeHam(ham, u + toMatrix("0100010", ham.R))) << endl;
 
         const Ham ham2(3, 3);
         cout << ham2.H << endl;
         cout << ham2.G << endl;
-        const RingElem O2 = zero(ham2.R);
-        const RingElem I2 = one(ham2.R);
-        const RingElem Z2 = 2 * I2;
-        const matrix w2 = NewDenseMat(RowMat({O2, Z2, I2, O2, Z2, I2, O2, O2, O2, O2}));
+        const matrix w2 = toMatrix("0210210000", ham2.R);
         const matrix u2 = encodeHam(ham2, w2);
-        cout << u2 << endl;
-        cout << decodeHam(ham2, u2) << endl;
-        cout << decodeHam(ham2, u2 + RowMat({O2, O2, Z2, O2, O2, O2, O2, O2, O2, O2, O2, O2, O2})) << endl;
-        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, Z2, O2, O2, O2, O2, O2, O2})) << endl;
-        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, O2, I2, O2, O2, O2, O2, O2})) << endl;
-        cout << decodeHam(ham2, u2 + RowMat({O2, O2, O2, O2, O2, O2, Z2, I2, O2, O2, O2, O2, O2})) << endl;
+        cout << toString(u2) << endl;
+        cout << toString(decodeHam(ham2, u2)) << endl;
+        cout << toString(decodeHam(ham2, u2 + toMatrix("0020000000000", ham2.R))) << endl;
+        cout << toString(decodeHam(ham2, u2 + toMatrix("0000002000000", ham2.R))) << endl;
+        cout << toString(decodeHam(ham2, u2 + toMatrix("0000000100000", ham2.R))) << endl;
+        cout << toString(decodeHam(ham2, u2 + toMatrix("0100000000020", ham2.R))) << endl;
 
         const Ham ham3(2, 5);
         cout << ham3.H << endl;
         cout << ham3.G << endl;
-        const RingElem O3 = zero(ham3.R);
-        const RingElem I3 = one(ham3.R);
-        const RingElem Z3 = 2 * I3;
-        const RingElem E3 = 3 * I3;
-        const RingElem A3 = 4 * I3;
-        const matrix w3 = NewDenseMat(RowMat({E3, A3, I3, O3}));
+        const matrix w3 = toMatrix("3410", ham3.R);
         const matrix u3 = encodeHam(ham3, w3);
-        cout << u3 << endl;
-        cout << decodeHam(ham3, u3) << endl;
-        cout << decodeHam(ham3, u3 + RowMat({E3, O3, O3, O3, O3, O3})) << endl;
-        cout << decodeHam(ham3, u3 + RowMat({O3, O3, O3, O3, O3, I3})) << endl;
-        cout << decodeHam(ham3, u3 + RowMat({O3, O3, A3, O3, O3, O3})) << endl;
-        cout << decodeHam(ham3, u3 + RowMat({O3, O3, Z3, O3, E3, O3})) << endl;
+        cout << toString(u3) << endl;
+        cout << toString(decodeHam(ham3, u3)) << endl;
+        cout << toString(decodeHam(ham3, u3 + toMatrix("300000", ham3.R))) << endl;
+        cout << toString(decodeHam(ham3, u3 + toMatrix("000001", ham3.R))) << endl;
+        cout << toString(decodeHam(ham3, u3 + toMatrix("004000", ham3.R))) << endl;
+        cout << toString(decodeHam(ham3, u3 + toMatrix("002030", ham3.R))) << endl;
     }
 
     void testRM() {
