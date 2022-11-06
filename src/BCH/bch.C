@@ -57,8 +57,8 @@ namespace CoCoA {
             return zero(Px);
 
         matrix M = NewDenseMat(Px, v, v);
-        for (long i = 0; i < v; i++)
-            for (long j = 0; j < v; j++)
+        for (long i = 0; i < v; ++i)
+            for (long j = 0; j < v; ++j)
                 SetEntry(M, i, j, s[i + j]);
 
         bool zd;
@@ -72,14 +72,14 @@ namespace CoCoA {
 
         const long w = v + 1;
         matrix V = NewDenseMat(Px, w, 1);
-        for (long i = 0; i < w; i++)
+        for (long i = 0; i < w; ++i)
             SetEntry(V, i, 0, s[w + i]);
 
         // Sadly NYI: const matrix P = LinSolve(M, -V);
         const matrix P = -inverse(M) * V;
 
         RingElem ret = one(Px);
-        for (long i = 0; i < w; i++)
+        for (long i = 0; i < w; ++i)
             ret += P(w - i - 1, 0) * power(x, i + 1);
         return ret;
     }
@@ -90,7 +90,7 @@ namespace CoCoA {
         const ring &Px = owner(e);
 
         RingElem S = zero(Px);
-        for (long i = 0; i < s.size(); i++)
+        for (long i = 0; i < s.size(); ++i)
             S += s[i] * power(x, i);
 
         const RingElem O = NR(S * e, {power(x, bch.d - 1)});
@@ -118,7 +118,7 @@ namespace CoCoA {
 
         // Calculate syndromes
         vector<RingElem> s(bch.d - 1, zero(Px));
-        for (long j = 0; j <= bch.d - 2; j++) {
+        for (long j = 0; j <= bch.d - 2; ++j) {
             const RingHom eval = PolyAlgebraHom(
                     Px, Px, {power(bch.a, bch.c + j)});
             s[j] = eval(p);

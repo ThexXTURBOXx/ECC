@@ -172,7 +172,7 @@ namespace CoCoA {
         if (argc <= 1) {
             all = true;
         } else {
-            for (int i = 1; i < argc; i++) {
+            for (int i = 1; i < argc; ++i) {
                 const char *arg = argv[i];
                 if (strcmp(arg, "bch") == 0) {
                     bch = true;

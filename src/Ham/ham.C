@@ -28,7 +28,7 @@ namespace CoCoA {
         if (sa != sb) return sa < sb;
 
         const size_t len = a.size();
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; ++i) {
             if (a[i] != b[i]) return a[i] < b[i];
         }
         return false;
@@ -43,7 +43,7 @@ namespace CoCoA {
     }
 
     long isMultiple(const long q, const vector<RingElem> &a, const vector<RingElem> &b) {
-        for (long i = 1; i <= q; i++) {
+        for (long i = 1; i <= q; ++i) {
             if (mult(i, a) == b) return i;
         }
         return 0;
@@ -92,7 +92,7 @@ namespace CoCoA {
         if (IsZero(S)) return w;
 
         const vector<RingElem> Svec = GetCol(S, 0);
-        for (long i = 0; i < ham.n; i++) {
+        for (long i = 0; i < ham.n; ++i) {
             const long b = isMultiple(ham.q, GetCol(ham.H, i), Svec);
             if (b != 0) return w - e(ham, i, RingElem(ham.R, b));
         }

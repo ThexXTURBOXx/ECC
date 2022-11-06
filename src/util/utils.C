@@ -81,11 +81,11 @@ namespace CoCoA {
         vector<vector<T>> result;
 
         const long maxValue = SmallPower(set.size(), tupleSize);
-        for (unsigned long counter = 0; counter < maxValue; counter++) {
+        for (unsigned long counter = 0; counter < maxValue; ++counter) {
             vector<T> tuple(tupleSize);
 
             unsigned long currentValue = counter;
-            for (long i = 0; i < tupleSize; i++) {
+            for (long i = 0; i < tupleSize; ++i) {
                 unsigned long digit = currentValue % set.size();
                 tuple[tupleSize - i - 1] = set[digit];
                 currentValue /= set.size();
