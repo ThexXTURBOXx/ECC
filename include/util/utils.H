@@ -27,6 +27,8 @@ namespace CoCoA {
 
     matrix e(const ring &R, long i, const RingElem &b, long n);
 
+    long wt(const vector<long> &v);
+
 }
 
 #endif //ECC_UTILS_H

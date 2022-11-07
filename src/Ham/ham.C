@@ -8,11 +8,9 @@ using namespace std;
 namespace CoCoA {
 
     bool sortHam(const vector<long> &a, const vector<long> &b) {
-        const long sa = accumulate(a.cbegin(), a.cend(), 0L,
-                                   [](const long a, const long b) { return a + sign(b); });
-        const long sb = accumulate(b.cbegin(), b.cend(), 0L,
-                                   [](const long a, const long b) { return a + sign(b); });
-        if (sa != sb) return sa < sb;
+        const long wa = wt(a);
+        const long wb = wt(b);
+        if (wa != wb) return wa < wb;
 
         const size_t len = a.size();
         for (int i = 0; i < len; ++i) {

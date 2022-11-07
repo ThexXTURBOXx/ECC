@@ -67,7 +67,7 @@ namespace CoCoA {
         const long n = NumCols(m);
         string str;
         long buf;
-        for (long i = n - 1; i >= 0; --i) {
+        for (long i = 0; i < n; ++i) {
             if (!IsConvertible(buf, m(0, i))) {
                 CoCoA_THROW_ERROR("Invalid coefficient!", __func__);
             }
@@ -104,6 +104,11 @@ namespace CoCoA {
         matrix m = NewDenseMat(ZeroMat(R, 1, n));
         SetEntry(m, 0, i, b);
         return m;
+    }
+
+    long wt(const vector<long> &v) {
+        return accumulate(v.cbegin(), v.cend(), 0L,
+                          [](const long a, const long b) { return a + sign(b); });
     }
 
 }

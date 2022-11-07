@@ -125,8 +125,6 @@ namespace CoCoA {
         const Ham ham(3, 2);
         cout << ham.H << endl;
         cout << ham.G << endl;
-        const RingElem O = zero(ham.R);
-        const RingElem I = one(ham.R);
         const matrix w = toMatrix("0001", ham.R);
         const matrix u = encodeHam(ham, w);
         cout << toString(u) << endl;
