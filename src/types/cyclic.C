@@ -1,5 +1,5 @@
 #include "CoCoA/library.H"
-#include "ecc/cyclic.H"
+#include "types/cyclic.H"
 
 using namespace std;
 

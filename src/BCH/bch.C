@@ -1,6 +1,6 @@
 #include <numeric>
 #include "CoCoA/library.H"
-#include "ecc/cyclic.H"
+#include "types/cyclic.H"
 #include "ecc/bch.H"
 
 using namespace std;

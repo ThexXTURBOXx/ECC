@@ -2,7 +2,7 @@
 #define ECC_HAM_H
 
 #include "CoCoA/library.H"
-#include "ecc/linear.H"
+#include "types/linear.H"
 
 using namespace std;
 
