@@ -1,5 +1,6 @@
 #include <numeric>
 #include "CoCoA/library.H"
+#include "ecc/cyclic.H"
 #include "ecc/bch.H"
 
 using namespace std;
@@ -107,9 +108,7 @@ namespace CoCoA {
     }
 
     RingElem encodeBCH(const BCH &bch, ConstRefRingElem p, ConstRefRingElem x) {
-        const RingElem px = p * power(x, bch.n - bch.k);
-        const RingElem r = NR(px, {bch.g});
-        return px - r;
+        return sysEncodeCyclic(bch.g, p, x, bch.n, bch.k);
     }
 
     RingElem decodeBCH(const BCH &bch, ConstRefRingElem p, ConstRefRingElem x) {

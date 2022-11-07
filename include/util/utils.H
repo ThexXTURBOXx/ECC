@@ -25,6 +25,8 @@ namespace CoCoA {
     template<class T>
     vector <vector<T>> tuples(const vector <T> &set, long tupleSize);
 
+    matrix e(const ring &R, long i, const RingElem &b, long n);
+
 }
 
 #endif //ECC_UTILS_H

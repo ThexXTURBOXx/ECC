@@ -7,19 +7,6 @@ using namespace std;
 
 namespace CoCoA {
 
-    matrix genMat(const matrix &H) {
-        const long n = NumCols(H);
-        const long k = n - NumRows(H);
-
-        vector<long> rows(n - k);
-        iota(begin(rows), end(rows), 0);
-        vector<long> cols(k);
-        iota(begin(cols), end(cols), 0);
-
-        const MatrixView P = submat(H, rows, cols);
-        return NewDenseMat(ConcatHor(IdentityMat(RingOf(H), k), -transpose(P)));
-    }
-
     bool sortHam(const vector<long> &a, const vector<long> &b) {
         const long sa = accumulate(a.cbegin(), a.cend(), 0L,
                                    [](const long a, const long b) { return a + sign(b); });
@@ -77,13 +64,7 @@ namespace CoCoA {
     }
 
     matrix encodeHam(const Ham &ham, const matrix &w) {
-        return w * ham.G;
-    }
-
-    matrix e(const Ham &ham, const long i, const RingElem &b) {
-        matrix m = NewDenseMat(ZeroMat(ham.R, 1, ham.n));
-        SetEntry(m, 0, i, b);
-        return m;
+        return linEncode(ham.G, w);
     }
 
     matrix decodeHam(const Ham &ham, const matrix &w) {
@@ -93,7 +74,7 @@ namespace CoCoA {
         const vector<RingElem> Svec = GetCol(S, 0);
         for (long i = 0; i < ham.n; ++i) {
             const long b = divide(Svec, GetCol(ham.H, i), ham.q);
-            if (b != 0) return w - e(ham, i, RingElem(ham.R, b));
+            if (b != 0) return w - e(ham.R, i, RingElem(ham.R, b), ham.n);
         }
         CoCoA_THROW_ERROR("Cannot decode!", "Ham");
         return w; // Shut up compiler warnings

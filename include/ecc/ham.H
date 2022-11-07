@@ -2,12 +2,11 @@
 #define ECC_HAM_H
 
 #include "CoCoA/library.H"
+#include "ecc/linear.H"
 
 using namespace std;
 
 namespace CoCoA {
-
-    matrix genMat(const matrix &H);
 
     matrix hamH(const ring &R, long r, long q);
 

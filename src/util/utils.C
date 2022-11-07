@@ -100,4 +100,10 @@ namespace CoCoA {
     // Explicitly generate template function to avoid linker errors
     template vector<vector<long>> tuples<long>(const vector<long> &, const long);
 
+    matrix e(const ring &R, const long i, const RingElem &b, const long n) {
+        matrix m = NewDenseMat(ZeroMat(R, 1, n));
+        SetEntry(m, 0, i, b);
+        return m;
+    }
+
 }
