@@ -2,6 +2,7 @@
 #include "CoCoA/library.H"
 #include "util/utils.H"
 #include "ecc/bch.H"
+#include "ecc/golay.H"
 #include "ecc/ham.H"
 #include "ecc/rm.H"
 
@@ -119,6 +120,58 @@ namespace CoCoA {
         cout << toString(dec3, n, x) << endl;
     }
 
+    void testGolay() {
+        cout << "========================== Golay ==========================" << endl << endl;
+
+        const Golay g11(11);
+        cout << "[" << g11.n << "," << g11.k << "," << g11.d << "]" << endl;
+        cout << g11.G << endl;
+        const matrix w1 = toMatrix("101201", g11.R);
+        const matrix u1 = encodeGolay(g11, w1);
+        cout << toString(u1) << endl;
+        /*cout << toString(decodeGolay(g11, u1)) << endl;
+        cout << toString(decodeGolay(g11, u1 + toMatrix("10000000000", g11.R))) << endl;
+        cout << toString(decodeGolay(g11, u1 + toMatrix("00010020000", g11.R))) << endl;
+        cout << toString(decodeGolay(g11, u1 + toMatrix("00020010020", g11.R))) << endl;
+        cout << toString(decodeGolay(g11, u1 + toMatrix("00000011200", g11.R))) << endl;*/
+
+        const Golay g12(12);
+        cout << "[" << g12.n << "," << g12.k << "," << g12.d << "]" << endl;
+        cout << g12.G << endl;
+        const matrix w2 = toMatrix("101201", g12.R);
+        const matrix u2 = encodeGolay(g12, w2);
+        cout << toString(u2) << endl;
+        /*cout << toString(decodeGolay(g12, u2)) << endl;
+        cout << toString(decodeGolay(g12, u2 + toMatrix("100000000000", g12.R))) << endl;
+        cout << toString(decodeGolay(g12, u2 + toMatrix("000100200000", g12.R))) << endl;
+        cout << toString(decodeGolay(g12, u2 + toMatrix("000200100200", g12.R))) << endl;
+        cout << toString(decodeGolay(g12, u2 + toMatrix("000000112000", g12.R))) << endl;*/
+
+        const Golay g23(23);
+        cout << "[" << g23.n << "," << g23.k << "," << g23.d << "]" << endl;
+        cout << g23.G << endl;
+        const matrix w3 = toMatrix("101100101101", g23.R);
+        const matrix u3 = encodeGolay(g23, w3);
+        cout << toString(u3) << endl;
+        cout << toString(decodeGolay(g23, u3)) << endl;
+        cout << toString(decodeGolay(g23, u3 + toMatrix("10000000000000000000000", g23.R))) << endl;
+        cout << toString(decodeGolay(g23, u3 + toMatrix("00000010000000100000000", g23.R))) << endl;
+        cout << toString(decodeGolay(g23, u3 + toMatrix("00000000000011100000000", g23.R))) << endl;
+        cout << toString(decodeGolay(g23, u3 + toMatrix("00000000000111000000000", g23.R))) << endl;
+
+        const Golay g24(24);
+        cout << "[" << g24.n << "," << g24.k << "," << g24.d << "]" << endl;
+        cout << g24.G << endl;
+        const matrix w4 = toMatrix("101100101101", g24.R);
+        const matrix u4 = encodeGolay(g24, w4);
+        cout << toString(u4) << endl;
+        cout << toString(decodeGolay(g24, u4)) << endl;
+        cout << toString(decodeGolay(g24, u4 + toMatrix("100000000000000000000000", g24.R))) << endl;
+        cout << toString(decodeGolay(g24, u4 + toMatrix("000000100000001000000000", g24.R))) << endl;
+        cout << toString(decodeGolay(g24, u4 + toMatrix("000000000000111000000000", g24.R))) << endl;
+        cout << toString(decodeGolay(g24, u4 + toMatrix("000000000001110000000000", g24.R))) << endl;
+    }
+
     void testHam() {
         cout << "========================== Ham ==========================" << endl << endl;
 
@@ -165,7 +218,7 @@ namespace CoCoA {
     }
 
     void example(const int argc, const char *argv[]) {
-        bool all = false, bch = false, ham = false, rm = false;
+        bool all = false, bch = false, golay = false, ham = false, rm = false;
 
         if (argc <= 1) {
             all = true;
@@ -176,6 +229,8 @@ namespace CoCoA {
                     bch = true;
                 } else if (strcmp(arg, "ham") == 0) {
                     ham = true;
+                } else if (strcmp(arg, "golay") == 0) {
+                    golay = true;
                 } else if (strcmp(arg, "rm") == 0) {
                     rm = true;
                 }
@@ -185,6 +240,10 @@ namespace CoCoA {
         if (all || bch) {
             cout << endl << endl << endl;
             testBCH();
+        }
+        if (all || golay) {
+            cout << endl << endl << endl;
+            testGolay();
         }
         if (all || ham) {
             cout << endl << endl << endl;

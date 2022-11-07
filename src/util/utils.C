@@ -1,3 +1,4 @@
+#include <numeric>
 #include "util/utils.H"
 #include "CoCoA/library.H"
 
@@ -106,9 +107,43 @@ namespace CoCoA {
         return m;
     }
 
+    template<class T>
+    vector<T> cycShift(const vector<T> &vec, const long s) {
+        const long len = (long) vec.size();
+        vector<T> ret(len);
+        for (long i = 0; i < len; ++i) {
+            ret[(i + s + len) % len] = vec[i];
+        }
+        return ret;
+    }
+
+    matrix revCirculantMatrix(const vector<RingElem> &firstRow) {
+        const long len = (long) firstRow.size();
+        vector<vector<RingElem>> m(len);
+        m[0] = firstRow;
+        for (long i = 1; i < len; ++i) {
+            m[i] = cycShift(firstRow, -i);
+        }
+        return NewDenseMat(owner(firstRow[0]), m);
+    }
+
     long wt(const vector<long> &v) {
         return accumulate(v.cbegin(), v.cend(), 0L,
                           [](const long a, const long b) { return a + sign(b); });
+    }
+
+    long wt(const ConstMatrixView &m) {
+        long cols = NumCols(m);
+        long rows = NumRows(m);
+        long ret = 0;
+        for (long i = 0; i < rows; ++i) {
+            for (long j = 0; j < cols; ++j) {
+                if (!IsZero(m(i, j))) {
+                    ++ret;
+                }
+            }
+        }
+        return ret;
     }
 
 }

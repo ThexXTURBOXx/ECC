@@ -14,6 +14,8 @@ add_library(types src/types/cyclic.C src/types/linear.C)
 # ECCs
 add_library(BCH src/BCH/bch.C)
 target_link_libraries(BCH PRIVATE ${COCOA_LIBRARY} util types -lgmp)
+add_library(Golay src/Golay/golay.C)
+target_link_libraries(Golay PRIVATE ${COCOA_LIBRARY} util types -lgmp)
 add_library(Ham src/Ham/ham.C)
 target_link_libraries(Ham PRIVATE ${COCOA_LIBRARY} util types -lgmp)
 add_library(RM src/RM/rm.C)
@@ -24,4 +26,4 @@ add_executable(test src/test/test.C)
 
 include_directories(include)
 
-target_link_libraries(test PRIVATE ${COCOA_LIBRARY} util types BCH Ham RM -lgmp)
+target_link_libraries(test PRIVATE ${COCOA_LIBRARY} util types BCH Golay Ham RM -lgmp)
