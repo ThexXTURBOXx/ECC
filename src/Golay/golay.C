@@ -7,8 +7,7 @@ using namespace std;
 
 namespace CoCoA {
 
-    matrix G11Mat() {
-        const ring R = NewZZmod(3);
+    matrix G11Mat(const ring &R) {
         return NewDenseMat(R, {
                 {0, 1, 1, 1, 1},
                 {1, 0, 1, 2, 2},
@@ -19,52 +18,54 @@ namespace CoCoA {
         });
     }
 
-    matrix G12Mat() {
-        const ConstMatrixView G11 = G11Mat();
-        const ring &R = RingOf(G11);
+    matrix G12Mat(const ring &R) {
+        const ConstMatrixView G11 = G11Mat(R);
         const RingElem O = zero(R);
         const RingElem I = one(R);
         const RingElem Z = 2 * I;
         return NewDenseMat(ConcatHor(G11, ColMat({I, I, Z, Z, I, O})));
     }
 
-    matrix G23Mat() {
-        const ring R = NewZZmod(2);
+    matrix G23Mat(const ring &R) {
         const RingElem O = zero(R);
         const RingElem I = one(R);
         const ConstMatrixView circ = revCirculantMatrix({I, I, O, I, I, I, O, O, O, I, O});
         return NewDenseMat(ConcatVer(circ, RowMat(vector<RingElem>(11, I))));
     }
 
-    matrix G23toG24(const matrix &G23) {
-        const ring &R = RingOf(G23);
+    matrix G24Mat(const ring &R) {
+        const matrix G23 = G23Mat(R);
         return NewDenseMat(ConcatHor(G23,
                                      ConcatVer(ColMat(vector<RingElem>(11, one(R))), ColMat({zero(R)}))));
     }
 
-    matrix G24Mat() {
-        return G23toG24(G23Mat());
-    }
-
-    matrix golayMatPart(const long n) {
+    matrix golayMatPart(const ring &R, const long n) {
         switch (n) {
             case 11:
-                return G11Mat();
+                return G11Mat(R);
             case 12:
-                return G12Mat();
+                return G12Mat(R);
             case 23:
-                return G23Mat();
+                return G23Mat(R);
             case 24:
-                return G24Mat();
+                return G24Mat(R);
             default:
                 CoCoA_THROW_ERROR(ERR::BadArg, __func__);
                 return NewDenseMat(ZeroMat(RingZZ(), 1, 1)); // Shut up compiler warnings
         }
     }
 
-    matrix golayMat(const long n) {
+    matrix golayMatPart(const long n) {
+        return golayMatPart(NewZZmod(n > 20 ? 2 : 3), n);
+    }
+
+    matrix golayMat(const ring &R, const long n) {
         const matrix G = golayMatPart(n);
         return NewDenseMat(ConcatHor(IdentityMat(RingOf(G), NumRows(G)), G));
+    }
+
+    matrix golayMat(const long n) {
+        return golayMat(NewZZmod(n > 20 ? 2 : 3), n);
     }
 
     matrix encodeGolay(const Golay &gol, const matrix &w) {
@@ -83,23 +84,19 @@ namespace CoCoA {
 
     // See D.G. Hoffman
     matrix decodeG24(const Golay &gol, const matrix &w) {
-        const bool isExtended = gol.n == 24;
-        const matrix G = isExtended ? gol.G : G23toG24(gol.G);
+        const ConstMatrixView S = w * transpose(gol.GExt);
+        if (wt(S) <= 3) return w + ConcatHor(S, ZeroMat(gol.R, 1, gol.k));
 
-        const ConstMatrixView S = w * transpose(G);
-        if (wt(S) <= 3)return w + ConcatHor(S, ZeroMat(gol.R, 1, gol.k));
-
-        const matrix A = isExtended ? gol.A : G23toG24(gol.A);
         for (long j = 0; j < 12; j++) {
-            const ConstMatrixView aj = RowMat(A, j);
+            const ConstMatrixView aj = RowMat(gol.AExt, j);
             if (wt(S + aj) <= 2) return w + ConcatHor(S + aj, e(gol.R, j, one(gol.R), gol.k));
         }
 
-        const ConstMatrixView SA = S * transpose(A);
+        const ConstMatrixView SA = S * transpose(gol.AExt);
         if (wt(SA) <= 3) return w + ConcatHor(ZeroMat(gol.R, 1, gol.k), SA);
 
         for (long j = 0; j < 12; j++) {
-            const ConstMatrixView aj = RowMat(A, j);
+            const ConstMatrixView aj = RowMat(gol.AExt, j);
             if (wt(SA + aj) <= 2) return w + ConcatHor(e(gol.R, j, one(gol.R), gol.k), SA + aj);
         }
 
