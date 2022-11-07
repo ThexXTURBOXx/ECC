@@ -163,7 +163,7 @@ namespace CoCoA {
     void testRM() {
         cout << "========================== RM ==========================" << endl << endl;
 
-        cout << RM(4, 7) << endl;
+        cout << RM(2, 5) << endl;
     }
 
     void example(const int argc, const char *argv[]) {
