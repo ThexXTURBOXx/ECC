@@ -6,7 +6,7 @@ Error correction code implementations in CoCoALib
 
 1. Download the [CoCoALib](https://cocoa.dima.unige.it/cocoa/cocoalib/) source code
 2. Extract the archive into `cocoalib/`
-3. Install the CoCoALib library and header files: `./make_cocoalib.sh`
-4. Install [GMP](https://gmplib.org/) using your favorite package manager or compile it yourself
+3. Install [GMP](https://gmplib.org/) using your favorite package manager or compile it yourself
+4. Install the CoCoALib library and header files: `./make_cocoalib.sh`
 5. Setup CMake using the `cmake` command and appropriate arguments
 6. Build the resulting executables using `cmake --build`
