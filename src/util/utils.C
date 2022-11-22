@@ -146,4 +146,41 @@ namespace CoCoA {
         return ret;
     }
 
+    vector<long> ChienSearch(ConstRefRingElem f, ConstRefRingElem a, const long qn, ConstRefRingElem x) {
+        const ring &R = owner(f);
+        const RingElem z = zero(R);
+        const long n = deg(f);
+        vector<long> rootPowers = {};
+        vector<RingElem> b = CoeffVecWRT(f, x);
+        for (long i = 0; i < qn - 1; ++i) {
+            if (IsZero(accumulate(b.cbegin(), b.cend(), z)))
+                rootPowers.push_back(i);
+            for (long j = 0; j <= n; ++j)
+                b[j] *= power(a, j);
+        }
+        return rootPowers;
+    }
+
+    long ChienSearchSingleRoot(ConstRefRingElem f, ConstRefRingElem a, const long qn, ConstRefRingElem x) {
+        const ring &R = owner(f);
+        const RingElem z = zero(R);
+        const long n = deg(f);
+        vector<RingElem> b = CoeffVecWRT(f, x);
+        for (long i = 0; i < qn - 1; ++i) {
+            if (IsZero(accumulate(b.cbegin(), b.cend(), z)))
+                return i;
+            for (long j = 0; j <= n; ++j)
+                b[j] *= power(a, j);
+        }
+        CoCoA_THROW_ERROR("Polynomial does not have a root", __func__);
+        return 0;
+    }
+
+    RingElem getUniPoly(const vector<RingElem> &G, const long indetIndex, ConstRefRingElem fallback) {
+        for (auto &g: G) {
+            if (!IsConstant(g) && UnivariateIndetIndex(g) == indetIndex) return g;
+        }
+        return fallback;
+    }
+
 }

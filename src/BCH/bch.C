@@ -2,6 +2,7 @@
 #include "CoCoA/library.H"
 #include "types/cyclic.H"
 #include "ecc/bch.H"
+#include "util/utils.H"
 
 using namespace std;
 
@@ -23,28 +24,6 @@ namespace CoCoA {
         for (long i = c; i <= c + d - 2; ++i)
             ret = lcm(ret, MinPolyQuot(power(alpha, i), I, x));
         return ret;
-    }
-
-    // f: Polynomial to find roots of
-    // a: Primitive element in field
-    // qn: Amount of elements in field
-    // x: Variable x
-    vector<long> ChienSearch(ConstRefRingElem f, ConstRefRingElem a,
-                             const long qn, ConstRefRingElem x) {
-        const ring &R = owner(f);
-        const RingElem z = zero(R);
-        const long n = deg(f);
-        vector<long> rootPowers = {};
-        vector<RingElem> b = CoeffVecWRT(f, x);
-        for (long i = 0; i < qn - 1; ++i) {
-            if (IsZero(accumulate(b.cbegin(), b.cend(), z))) {
-                const long currPower = i - qn + 1;
-                rootPowers.push_back(currPower % (qn - 1));
-            }
-            for (long j = 0; j <= n; ++j)
-                b[j] *= power(a, j);
-        }
-        return rootPowers;
     }
 
     // From Jungnickel
@@ -99,10 +78,11 @@ namespace CoCoA {
 
         RingElem ret = zero(Px);
         for (long k: roots) {
+            const long revK = (k - bch.qn + 1) % (bch.qn - 1);
             const RingHom eval = PolyAlgebraHom(
-                    Px, Px, {power(bch.a, k)});
-            ret += -power(x, -k) * (power(bch.a, -k) * eval(O))
-                   / (power(bch.a, -bch.c * k) * eval(ed));
+                    Px, Px, {power(bch.a, revK)});
+            ret += -power(x, -revK) * (power(bch.a, -revK) * eval(O))
+                   / (power(bch.a, -bch.c * revK) * eval(ed));
         }
         return ret;
     }
@@ -136,7 +116,7 @@ namespace CoCoA {
         if (bch.q == 2) {
             RingElem f = p;
             for (long j: roots)
-                f -= power(x, -j);
+                f -= power(x, -((j - bch.qn + 1) % (bch.qn - 1)));
             return f;
         } else {
             return p - Forney(bch, s, e, roots, x);
