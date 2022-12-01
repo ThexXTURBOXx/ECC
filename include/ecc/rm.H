@@ -7,8 +7,8 @@ using namespace std;
 
 namespace CoCoA {
 
-    matrix RM(int r, int m);
+  matrix RM(int r, int m);
 
 }
 
-#endif //ECC_RM_H
+#endif // ECC_RM_H

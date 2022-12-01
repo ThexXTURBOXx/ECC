@@ -7,12 +7,12 @@ using namespace std;
 
 namespace CoCoA {
 
-    matrix genMat(const matrix &H);
+  matrix genMat(const matrix &H);
 
-    matrix checkMat(const matrix &G);
+  matrix checkMat(const matrix &G);
 
-    matrix linEncode(const matrix &G, const matrix &w);
+  matrix linEncode(const matrix &G, const matrix &w);
 
 }
 
-#endif //ECC_LINEAR_H
+#endif // ECC_LINEAR_H

@@ -6,111 +6,115 @@ using namespace std;
 
 namespace CoCoA {
 
-    RingElem sysEncodeCyclic(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, const long n, const long k) {
-        const RingElem px = p * power(x, n - k);
-        const RingElem r = NR(px, {g});
-        return px - r;
+  RingElem sysEncodeCyclic(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, const long n, const long k) {
+    const RingElem px = p * power(x, n - k);
+    const RingElem r = NR(px, {g});
+    return px - r;
+  }
+
+  RingElem decodeCyclicGroebner(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, ConstRefRingElem a,
+                                const long q, const long n, const long qn) {
+    const ring &Px = owner(p);
+    const ring &P = CoeffRing(Px);
+    const vector<long> J = ChienSearch(g, a, qn, x); // Complete defining set
+    const size_t js = J.size();
+    const RingElem aP = EvalHom(Px, one(P))(a);
+
+    // Calculate syndromes
+    vector<RingElem> s(js, zero(P));
+    for (long j = 0; j < js; ++j) {
+      const RingHom eval = EvalHom(Px, power(aP, J[j]));
+      s[j] = eval(p);
     }
 
-    RingElem decodeCyclicGroebner(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, ConstRefRingElem a,
-                                  const long q, const long n, const long qn) {
-        const ring &Px = owner(p);
-        const ring &P = CoeffRing(Px);
-        const vector<long> J = ChienSearch(g, a, qn, x); // Complete defining set
-        const size_t js = J.size();
-        const RingElem aP = EvalHom(Px, one(P))(a);
+    // All defining syndromes zero -> no error
+    if (all_of(s.cbegin(), s.cend(),
+               [](const RingElem &r) {
+                 return IsZero(r);
+               }))
+      return p;
 
-        // Calculate syndromes
-        vector<RingElem> s(js, zero(P));
+    long v = 1;
+    ideal I({one(Px)});
+    do {
+      if (q==2) {
+        const ring Rx = NewPolyRing(P, NewSymbols(v), xel);
+        const RingElem &Rx1 = one(Rx);
+
+        vector<RingElem> S;
         for (long j = 0; j < js; ++j) {
-            const RingHom eval = EvalHom(Px, power(aP, J[j]));
-            s[j] = eval(p);
+          RingElem e = RingElem(Rx, -s[j]);
+          for (long m = 0; m < v; ++m) {
+            e += power(indet(Rx, m), J[j]);
+          }
+          S.push_back(e);
+        }
+        for (long m = 0; m < v; ++m) {
+          S.push_back(power(indet(Rx, m), n) - Rx1);
         }
 
-        // All defining syndromes zero -> no error
-        if (all_of(s.cbegin(), s.cend(),
-                   [](const RingElem &r) { return IsZero(r); }))
-            return p;
+        I = ideal(S);
+      } else {
+        const ring Rx = NewPolyRing(P, NewSymbols(2 * v), xel);
+        const RingElem &Rx1 = one(Rx);
 
-        long v = 1;
-        ideal I({one(Px)});
-        do {
-            if (q == 2) {
-                const ring Rx = NewPolyRing(P, NewSymbols(v), xel);
-                const RingElem &Rx1 = one(Rx);
-
-                vector<RingElem> S;
-                for (long j = 0; j < js; ++j) {
-                    RingElem e = RingElem(Rx, -s[j]);
-                    for (long m = 0; m < v; ++m) {
-                        e += power(indet(Rx, m), J[j]);
-                    }
-                    S.push_back(e);
-                }
-                for (long m = 0; m < v; ++m) {
-                    S.push_back(power(indet(Rx, m), n) - Rx1);
-                }
-
-                I = ideal(S);
-            } else {
-                const ring Rx = NewPolyRing(P, NewSymbols(2 * v), xel);
-                const RingElem &Rx1 = one(Rx);
-
-                vector<RingElem> S;
-                for (long j = 0; j < js; ++j) {
-                    RingElem e = RingElem(Rx, -s[j]);
-                    for (long m = 0; m < v; ++m) {
-                        e += indet(Rx, v + m) * power(indet(Rx, m), J[j]);
-                    }
-                    S.push_back(e);
-                }
-                for (long m = 0; m < v; ++m) {
-                    const RingElem &Ym = indet(Rx, v + m);
-                    S.push_back(power(Ym, q) - Ym);
-                    S.push_back(power(indet(Rx, m), n) - Rx1);
-                }
-
-                I = ideal(S);
-            }
-            ++v;
-        } while (IsOne(I));
-
-        vector<RingElem> G = ReducedGBasis(I);
-        const ring Rx = RingOf(I);
-        const RingElem aR = RingElem(Rx, aP);
-        const RingElem x1 = indet(Rx, 0);
-        const RingElem gx1 = getUniPoly(G, 0, power(x1, v + 1));
-
-        RingElem f = zero(Px);
-        if (deg(gx1) > v)
-            CoCoA_THROW_ERROR("Cannot decode!", "GroebnerDecode");
-        else {
-            const vector<long> roots = ChienSearch(gx1, aP, qn, x1);
-            if (q == 2) {
-                for (auto &j: roots) {
-                    f += power(x, j);
-                }
-            } else {
-                vector<RingElem> evalPts;
-                for (long i = 0; i < v - 1; ++i) {
-                    evalPts.push_back(power(aR, roots[i]));
-                }
-                for (long i = v - 1; i < 2 * (v - 1); ++i) {
-                    evalPts.push_back(indet(Rx, i));
-                }
-                const RingHom eval = PolyAlgebraHom(Rx, Rx, evalPts);
-                for_each(G.begin(), G.end(),
-                         [eval](auto &g) { g = eval(g); });
-                // TODO: Do we need another reduction here, i.e., G = ReducedGBasis(ideal(G)); ???
-                for (long m = 0; m < v - 1; ++m) {
-                    const long r = ChienSearchSingleRoot(getUniPoly(G, (v - 1) + m, one(Rx)),
-                                                         aR, qn, indet(Rx, (v - 1) + m));
-                    f += power(a, r) * power(x, roots[m]);
-                }
-            }
+        vector<RingElem> S;
+        for (long j = 0; j < js; ++j) {
+          RingElem e = RingElem(Rx, -s[j]);
+          for (long m = 0; m < v; ++m) {
+            e += indet(Rx, v + m) * power(indet(Rx, m), J[j]);
+          }
+          S.push_back(e);
+        }
+        for (long m = 0; m < v; ++m) {
+          const RingElem &Ym = indet(Rx, v + m);
+          S.push_back(power(Ym, q) - Ym);
+          S.push_back(power(indet(Rx, m), n) - Rx1);
         }
 
-        return p - f;
+        I = ideal(S);
+      }
+      ++v;
+    } while (IsOne(I));
+
+    vector<RingElem> G = ReducedGBasis(I);
+    const ring Rx = RingOf(I);
+    const RingElem aR = RingElem(Rx, aP);
+    const RingElem x1 = indet(Rx, 0);
+    const RingElem gx1 = getUniPoly(G, 0, power(x1, v + 1));
+
+    RingElem f = zero(Px);
+    if (deg(gx1) > v)
+      CoCoA_THROW_ERROR("Cannot decode!", "GroebnerDecode");
+    else {
+      const vector<long> roots = ChienSearch(gx1, aP, qn, x1);
+      if (q==2) {
+        for (auto &j: roots) {
+          f += power(x, j);
+        }
+      } else {
+        vector<RingElem> evalPts;
+        for (long i = 0; i < v - 1; ++i) {
+          evalPts.push_back(power(aR, roots[i]));
+        }
+        for (long i = v - 1; i < 2 * (v - 1); ++i) {
+          evalPts.push_back(indet(Rx, i));
+        }
+        const RingHom eval = PolyAlgebraHom(Rx, Rx, evalPts);
+        for_each(G.begin(), G.end(),
+                 [eval](auto &g) {
+                   g = eval(g);
+                 });
+        // TODO: Do we need another reduction here, i.e., G = ReducedGBasis(ideal(G)); ???
+        for (long m = 0; m < v - 1; ++m) {
+          const long r = ChienSearchSingleRoot(getUniPoly(G, (v - 1) + m, one(Rx)),
+                                               aR, qn, indet(Rx, (v - 1) + m));
+          f += power(a, r) * power(x, roots[m]);
+        }
+      }
     }
+
+    return p - f;
+  }
 
 }
