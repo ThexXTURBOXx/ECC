@@ -14,20 +14,18 @@ namespace CoCoA {
                       const string &f) {
     const QuotientRing Fp = NewZZmod(p);
     const SparsePolyRing Fpx = NewPolyRing(Fp, symbols("alpha,x"));
-    const RingElem alpha = indet(Fpx, 0);
-    const RingElem x = indet(Fpx, 1);
+    const RingElem &x = indet(Fpx, 1);
     const RingElem r = RingElem(Fpx, f);
     const ideal I(r);
 
     RingElem ret = one(Fpx);
     for (long i = c; i <= c + d - 2; ++i)
-      ret = lcm(ret, MinPolyQuot(power(alpha, i), I, x));
+      ret = lcm(ret, MinPolyQuot(IndetPower(Fpx, 0, i), I, x));
     return ret;
   }
 
   // From Jungnickel
-  RingElem PetersonGorensteinZierler(const BCH &bch, ConstRefRingElem p,
-                                     ConstRefRingElem x,
+  RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x,
                                      const vector<RingElem> &s, long v) {
     const ring &Px = owner(p);
 
@@ -106,7 +104,7 @@ namespace CoCoA {
 
     // Calculate error locator polynomial using the
     // Peterson-Gorenstein-Zierler algorithm
-    const RingElem e = PetersonGorensteinZierler(bch, p, x, s, t);
+    const RingElem e = PetersonGorensteinZierler(p, x, s, t);
     if (IsZero(e))
       return p;
 

@@ -45,12 +45,12 @@ namespace CoCoA {
         for (long j = 0; j < js; ++j) {
           RingElem e = RingElem(Rx, -s[j]);
           for (long m = 0; m < v; ++m) {
-            e += power(indet(Rx, m), J[j]);
+            e += IndetPower(Rx, m, J[j]);
           }
           S.push_back(e);
         }
         for (long m = 0; m < v; ++m) {
-          S.push_back(power(indet(Rx, m), n) - Rx1);
+          S.push_back(IndetPower(Rx, m, n) - Rx1);
         }
 
         I = ideal(S);
@@ -62,14 +62,13 @@ namespace CoCoA {
         for (long j = 0; j < js; ++j) {
           RingElem e = RingElem(Rx, -s[j]);
           for (long m = 0; m < v; ++m) {
-            e += indet(Rx, v + m) * power(indet(Rx, m), J[j]);
+            e += indet(Rx, v + m) * IndetPower(Rx, m, J[j]);
           }
           S.push_back(e);
         }
         for (long m = 0; m < v; ++m) {
-          const RingElem &Ym = indet(Rx, v + m);
-          S.push_back(power(Ym, q) - Ym);
-          S.push_back(power(indet(Rx, m), n) - Rx1);
+          S.push_back(IndetPower(Rx, v + m, q) - indet(Rx, v + m));
+          S.push_back(IndetPower(Rx, m, n) - Rx1);
         }
 
         I = ideal(S);
@@ -81,7 +80,7 @@ namespace CoCoA {
     const ring Rx = RingOf(I);
     const RingElem aR = RingElem(Rx, aP);
     const RingElem x1 = indet(Rx, 0);
-    const RingElem gx1 = getUniPoly(G, 0, power(x1, v + 1));
+    const RingElem gx1 = getUniPoly(G, 0, IndetPower(Rx, 0, v + 1));
 
     RingElem f = zero(Px);
     if (deg(gx1) > v)
