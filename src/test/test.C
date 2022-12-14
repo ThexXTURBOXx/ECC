@@ -303,7 +303,6 @@ namespace CoCoA {
     cout << toString(decodeRM(rm, u + toMatrix("0000000000000001", rm.R))) << endl;
 
     RM rm2(2, 5);
-    cout << rm2.k << endl;
     const matrix w2 = toMatrix("1001101100101100", rm2.R);
     const matrix u2 = encodeRM(rm2, w2);
     cout << toString(u2) << endl;

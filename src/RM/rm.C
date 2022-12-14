@@ -23,42 +23,33 @@ namespace CoCoA {
     }
 
     vector<vector<RingElem>>
-    generateAllRows(const ring &R, const long m, const vector<long> &S) { // NOLINT(misc-no-recursion)
+    generateAllRows(const ring &R, const long m, const vector<long> &S, const long off) { // NOLINT(misc-no-recursion)
       const long size = SmallPower(2, m);
-      if (S.empty())
-        return vector<vector<RingElem>>{vector<RingElem>(size, one(R))};
+      if (off==S.size())
+        return {vector<RingElem>(size, one(R))};
 
-      const RingElem &zeroR = zero(R);
-      const RingElem &oneR = one(R);
-      vector<vector<RingElem>> Srest = generateAllRows(R, m, vector<long>(S.begin() + 1, S.end()));
-      vector<RingElem> xiRow = constructVector(zeroR, oneR, size, m, S[0]);
-      vector<RingElem> notXiRow;
-      notXiRow.reserve(size);
-      std::transform(xiRow.begin(), xiRow.end(), std::back_inserter(notXiRow), [oneR](const auto &e) {
-        return oneR - e;
-      });
+      vector<vector<RingElem>> Srest = generateAllRows(R, m, S, off + 1);
+      vector<RingElem> xiRow = constructVector(zero(R), one(R), size, m, S[off]);
 
       size_t SrestSize = Srest.size();
       vector<vector<RingElem>> ret(2 * SrestSize);
 
       for (size_t i = 0; i < SrestSize; ++i) {
-        vector<RingElem> row = Srest[i];
         vector<RingElem> temp(size);
+        vector<RingElem> temp2(size);
         for (long j = 0; j < size; ++j) {
-          temp[j] = xiRow[j] * row[j];
+          temp[j] = xiRow[j] * Srest[i][j];
+          temp2[j] = (xiRow[j] + 1) * Srest[i][j];
         }
         ret[i] = temp;
-      }
-      for (size_t i = 0; i < SrestSize; ++i) {
-        vector<RingElem> row = Srest[i];
-        vector<RingElem> temp(size);
-        for (long j = 0; j < size; ++j) {
-          temp[j] = notXiRow[j] * row[j];
-        }
-        ret[SrestSize + i] = temp;
+        ret[SrestSize + i] = temp2;
       }
 
       return ret;
+    }
+
+    vector<vector<RingElem>> generateAllRows(const ring &R, const long m, const vector<long> &S) {
+      return generateAllRows(R, m, S, 0);
     }
   }
 
@@ -96,11 +87,9 @@ namespace CoCoA {
 
       for (const auto &S: Ss) {
         vector<RingElem> ret(cols, one(R));
-        for (const auto &i: S) {
-          vector<RingElem> row = xrows[i];
+        for (const auto &i: S)
           for (long j = 0; j < cols; ++j)
-            ret[j] *= row[j];
-        }
+            ret[j] *= xrows[i][j];
         G = ConcatVer(G, NewDenseMat(RowMat(ret)));
       }
     }
@@ -141,6 +130,7 @@ namespace CoCoA {
 
   matrix decodeRM(const RM &rm, matrix w) {
     matrix word = NewDenseMat(rm.R, 1, rm.k);
+    RingElem scalarProductTemp = zero(rm.R);
     for (long degree = rm.r; degree >= 0; --degree) {
       long upperR = rm.ribd[degree];
       long lowerR = degree==0 ? 0:rm.ribd[degree - 1] + 1;
@@ -150,11 +140,11 @@ namespace CoCoA {
         long zeros = 0;
 
         for (const auto &vrow: rm.votingRows[pos]) {
-          RingElem scalarProduct = zero(rm.R);
+          scalarProductTemp = zero(rm.R);
           for (long i = 0; i < rm.n; ++i) {
-            scalarProduct += w(0, i) * vrow[i];
+            scalarProductTemp += w(0, i) * vrow[i];
           }
-          if (IsZero(scalarProduct))
+          if (IsZero(scalarProductTemp))
             ++zeros;
           else
             ++ones;
@@ -166,14 +156,12 @@ namespace CoCoA {
         SetEntry(word, 0, pos, zeros > ones ? 0:1);
       }
 
-      vector<vector<RingElem>> columns = GetCols(rm.G);
       for (long i = 0; i < rm.n; ++i) {
-        vector<RingElem> col = columns[i];
-        RingElem scalarProduct = zero(rm.R);
+        scalarProductTemp = zero(rm.R);
         for (long j = lowerR; j <= upperR; ++j) {
-          scalarProduct += word(0, j) * col[j];
+          scalarProductTemp += word(0, j) * rm.G(j, i);
         }
-        SetEntry(w, 0, i, w(0, i) + scalarProduct);
+        SetEntry(w, 0, i, w(0, i) + scalarProductTemp);
       }
     }
     return word;
