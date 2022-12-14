@@ -57,9 +57,8 @@ namespace CoCoA {
     string str;
     long buf;
     for (long i = n - 1; i >= 0; --i) {
-      if (!IsConvertible(buf, getOr(coeffVec, i, z))) {
+      if (!IsConvertible(buf, getOr(coeffVec, i, z)))
         CoCoA_THROW_ERROR("Invalid coefficient!", __func__);
-      }
       str += toChar(buf);
     }
     return str;
@@ -70,9 +69,8 @@ namespace CoCoA {
     string str;
     long buf;
     for (long i = 0; i < n; ++i) {
-      if (!IsConvertible(buf, m(0, i))) {
+      if (!IsConvertible(buf, m(0, i)))
         CoCoA_THROW_ERROR("Invalid coefficient!", __func__);
-      }
       str += toChar(buf);
     }
     return str;
@@ -101,6 +99,36 @@ namespace CoCoA {
 
   // Explicitly generate template function to avoid linker errors
   template vector<vector<long>> tuples<long>(const vector<long> &, long);
+
+  template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, long);
+
+  namespace { /* anonymous */
+    // Improved version from examples/ex-MVT-Simplicial.C in CoCoALib
+    template<class T>
+    void subsetsInternal(const vector<T> &arr, int size, long left, int index, // NOLINT(misc-no-recursion)
+                         vector<T> &l, vector<vector<T>> &bl) {
+      if (left==0) {
+        bl.push_back(l);
+        return;
+      }
+      for (int i = index; i < size; i++) {
+        l.push_back(arr[i]);
+        subsetsInternal(arr, size, left - 1, i + 1, l, bl);
+        l.pop_back();
+      }
+    }
+  }
+
+  template<class T>
+  void subsets(const vector<T> &set, long setSize, vector<vector<T>> &ret) {
+    vector<T> buf;
+    return subsetsInternal(set, set.size(), setSize, 0, buf, ret);
+  }
+
+  // Explicitly generate template function to avoid linker errors
+  template void subsets<long>(const vector<long> &, long, vector<vector<long>> &);
+
+  template void subsets<RingElem>(const vector<RingElem> &, long, vector<vector<RingElem>> &);
 
   matrix e(const ring &R, const long i, const RingElem &b, const long n) {
     matrix m = NewDenseMat(ZeroMat(R, 1, n));
@@ -185,6 +213,14 @@ namespace CoCoA {
         return g;
     }
     return fallback;
+  }
+
+  long binom(const long n, const long k) {
+    BigInt b = binomial(n, k);
+    long ret;
+    if (!IsConvertible(ret, b))
+      CoCoA_THROW_ERROR(ERR::ArgTooBig, "binom");
+    return ret;
   }
 
 }

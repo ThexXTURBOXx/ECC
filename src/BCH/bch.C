@@ -25,8 +25,7 @@ namespace CoCoA {
   }
 
   // From Jungnickel
-  RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x,
-                                     const vector<RingElem> &s, long v) {
+  RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x, const vector<RingElem> &s, long v) {
     const ring &Px = owner(p);
 
     if (all_of(s.cbegin(), s.cend(),
@@ -45,10 +44,10 @@ namespace CoCoA {
       // Resizing suffices since the entries do not change
       M->myResize(v, v);
       zd = IsZeroDet(M);
-      if (zd && v==1)
+      if (zd && v == 1)
         CoCoA_THROW_ERROR("Cannot decode!", "BCH");
       --v;
-    } while (zd && v!=0);
+    } while (zd && v != 0);
 
     const long w = v + 1;
     matrix V = NewDenseMat(Px, w, 1);
@@ -114,7 +113,7 @@ namespace CoCoA {
       return p;
 
     // Calculate error values using Forney's algorithm and correct errors
-    if (bch.q==2) {
+    if (bch.q == 2) {
       RingElem f = p;
       for (long j: roots)
         f -= power(x, -((j - bch.qn + 1) % (bch.qn - 1)));

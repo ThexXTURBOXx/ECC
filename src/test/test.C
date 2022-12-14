@@ -292,7 +292,15 @@ namespace CoCoA {
     cout << "========================== RM ==========================" << endl
          << endl;
 
-    cout << RM(2, 5) << endl;
+    RM rm(2, 4);
+    const matrix w = toMatrix("10011011001", rm.R);
+    const matrix u = encodeRM(rm, w);
+    cout << toString(u) << endl;
+    cout << toString(decodeRM(rm, u)) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0000000000100000", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0000010000000100", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0000000100100100", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0100000010000001", rm.R))) << endl;
   }
 
   void example(const int argc, const char *argv[]) {
