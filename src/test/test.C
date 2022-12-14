@@ -298,9 +298,20 @@ namespace CoCoA {
     cout << toString(u) << endl;
     cout << toString(decodeRM(rm, u)) << endl;
     cout << toString(decodeRM(rm, u + toMatrix("0000000000100000", rm.R))) << endl;
-    cout << toString(decodeRM(rm, u + toMatrix("0000010000000100", rm.R))) << endl;
-    cout << toString(decodeRM(rm, u + toMatrix("0000000100100100", rm.R))) << endl;
-    cout << toString(decodeRM(rm, u + toMatrix("0100000010000001", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0001000000000000", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0000000000000100", rm.R))) << endl;
+    cout << toString(decodeRM(rm, u + toMatrix("0000000000000001", rm.R))) << endl;
+
+    RM rm2(2, 5);
+    cout << rm2.k << endl;
+    const matrix w2 = toMatrix("1001101100101100", rm2.R);
+    const matrix u2 = encodeRM(rm2, w2);
+    cout << toString(u2) << endl;
+    cout << toString(decodeRM(rm2, u2)) << endl;
+    cout << toString(decodeRM(rm2, u2 + toMatrix("00000000000000000000000000100000", rm2.R))) << endl;
+    cout << toString(decodeRM(rm2, u2 + toMatrix("00010000000000000000000010000000", rm2.R))) << endl;
+    cout << toString(decodeRM(rm2, u2 + toMatrix("00000000001000010000000000000001", rm2.R))) << endl;
+    cout << toString(decodeRM(rm2, u2 + toMatrix("10000001000000000000000000010000", rm2.R))) << endl;
   }
 
   void example(const int argc, const char *argv[]) {

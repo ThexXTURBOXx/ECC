@@ -139,8 +139,44 @@ namespace CoCoA {
     return linEncode(rm.G, w);
   }
 
-  matrix decodeRM(const RM &rm, const matrix &w) {
-    return w;
+  matrix decodeRM(const RM &rm, matrix w) {
+    matrix word = NewDenseMat(rm.R, 1, rm.k);
+    for (long degree = rm.r; degree >= 0; --degree) {
+      long upperR = rm.ribd[degree];
+      long lowerR = degree==0 ? 0:rm.ribd[degree - 1] + 1;
+
+      for (long pos = lowerR; pos <= upperR; ++pos) {
+        long ones = 0;
+        long zeros = 0;
+
+        for (const auto &vrow: rm.votingRows[pos]) {
+          RingElem scalarProduct = zero(rm.R);
+          for (long i = 0; i < rm.n; ++i) {
+            scalarProduct += w(0, i) * vrow[i];
+          }
+          if (IsZero(scalarProduct))
+            ++zeros;
+          else
+            ++ones;
+        }
+
+        if (ones==zeros)
+          CoCoA_THROW_ERROR("Cannot decode!", "RM");
+
+        SetEntry(word, 0, pos, zeros > ones ? 0:1);
+      }
+
+      vector<vector<RingElem>> columns = GetCols(rm.G);
+      for (long i = 0; i < rm.n; ++i) {
+        vector<RingElem> col = columns[i];
+        RingElem scalarProduct = zero(rm.R);
+        for (long j = lowerR; j <= upperR; ++j) {
+          scalarProduct += word(0, j) * col[j];
+        }
+        SetEntry(w, 0, i, w(0, i) + scalarProduct);
+      }
+    }
+    return word;
   }
 
 }

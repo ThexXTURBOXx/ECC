@@ -42,7 +42,7 @@ namespace CoCoA {
 
   matrix encodeRM(const RM &rm, const matrix &w);
 
-  matrix decodeRM(const RM &rm, const matrix &w);
+  matrix decodeRM(const RM &rm, matrix w);
 
 }
 
