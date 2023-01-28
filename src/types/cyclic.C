@@ -21,7 +21,7 @@ namespace CoCoA {
     const RingElem aP = EvalHom(Px, one(P))(a);
 
     // Calculate syndromes
-    vector<RingElem> s(js, zero(P));
+    vector <RingElem> s(js, zero(P));
     for (long j = 0; j < js; ++j) {
       const RingHom eval = EvalHom(Px, power(aP, J[j]));
       s[j] = eval(p);
@@ -41,7 +41,7 @@ namespace CoCoA {
         const ring Rx = NewPolyRing(P, NewSymbols(v), xel);
         const RingElem &Rx1 = one(Rx);
 
-        vector<RingElem> S;
+        vector <RingElem> S;
         for (long j = 0; j < js; ++j) {
           RingElem e = RingElem(Rx, -s[j]);
           for (long m = 0; m < v; ++m) {
@@ -58,7 +58,7 @@ namespace CoCoA {
         const ring Rx = NewPolyRing(P, NewSymbols(2 * v), xel);
         const RingElem &Rx1 = one(Rx);
 
-        vector<RingElem> S;
+        vector <RingElem> S;
         for (long j = 0; j < js; ++j) {
           RingElem e = RingElem(Rx, -s[j]);
           for (long m = 0; m < v; ++m) {
@@ -76,7 +76,7 @@ namespace CoCoA {
       ++v;
     } while (IsOne(I));
 
-    vector<RingElem> G = ReducedGBasis(I);
+    vector <RingElem> G = ReducedGBasis(I);
     const ring Rx = RingOf(I);
     const RingElem aR = RingElem(Rx, aP);
     const RingElem x1 = indet(Rx, 0);
@@ -92,7 +92,7 @@ namespace CoCoA {
           f += power(x, j);
         }
       } else {
-        vector<RingElem> evalPts;
+        vector <RingElem> evalPts;
         for (long i = 0; i < v - 1; ++i) {
           evalPts.push_back(power(aR, roots[i]));
         }

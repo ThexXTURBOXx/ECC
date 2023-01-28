@@ -7,8 +7,8 @@ using namespace std;
 namespace CoCoA {
 
   template<class T>
-  RingElem getOr(const vector<T> &vec, size_t i, T defaultVal) {
-    if (i >= vec.size())
+  RingElem getOr(const vector<T> &vec, const size_t i, T defaultVal) {
+    if (i < 0 || i >= vec.size())
       return defaultVal;
     return vec[i];
   }
@@ -98,15 +98,15 @@ namespace CoCoA {
   }
 
   // Explicitly generate template function to avoid linker errors
-  template vector<vector<long>> tuples<long>(const vector<long> &, long);
+  template vector<vector<long>> tuples<long>(const vector<long> &, const long);
 
-  template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, long);
+  template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, const long);
 
   namespace { /* anonymous */
     // Improved version from examples/ex-MVT-Simplicial.C in CoCoALib
     template<class T>
-    void subsetsInternal(const vector<T> &arr, int size, long left, int index, // NOLINT(misc-no-recursion)
-                         vector<T> &l, vector<vector<T>> &bl) {
+    void subsetsInternal(const vector<T> &arr, const int size, const long left, // NOLINT(misc-no-recursion)
+                         const int index, vector<T> &l, vector<vector<T>> &bl) {
       if (left==0) {
         bl.push_back(l);
         return;
@@ -120,15 +120,15 @@ namespace CoCoA {
   }
 
   template<class T>
-  void subsets(const vector<T> &set, long setSize, vector<vector<T>> &ret) {
+  void subsets(const vector<T> &set, const long setSize, vector<vector<T>> &ret) {
     vector<T> buf;
     return subsetsInternal(set, set.size(), setSize, 0, buf, ret);
   }
 
   // Explicitly generate template function to avoid linker errors
-  template void subsets<long>(const vector<long> &, long, vector<vector<long>> &);
+  template void subsets<long>(const vector<long> &, const long, vector<vector<long>> &);
 
-  template void subsets<RingElem>(const vector<RingElem> &, long, vector<vector<RingElem>> &);
+  template void subsets<RingElem>(const vector<RingElem> &, const long, vector<vector<RingElem>> &);
 
   matrix e(const ring &R, const long i, const RingElem &b, const long n) {
     matrix m = NewDenseMat(ZeroMat(R, 1, n));

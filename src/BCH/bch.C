@@ -44,10 +44,10 @@ namespace CoCoA {
       // Resizing suffices since the entries do not change
       M->myResize(v, v);
       zd = IsZeroDet(M);
-      if (zd && v == 1)
+      if (zd && v==1)
         CoCoA_THROW_ERROR("Cannot decode!", "BCH");
       --v;
-    } while (zd && v != 0);
+    } while (zd && v!=0);
 
     const long w = v + 1;
     matrix V = NewDenseMat(Px, w, 1);
@@ -63,8 +63,7 @@ namespace CoCoA {
     return ret;
   }
 
-  RingElem Forney(const BCH &bch, const vector<RingElem> &s,
-                  ConstRefRingElem e, const vector<long> &roots,
+  RingElem Forney(const BCH &bch, const vector<RingElem> &s, ConstRefRingElem e, const vector<long> &roots,
                   ConstRefRingElem x) {
     const ring &Px = owner(e);
 
@@ -113,7 +112,7 @@ namespace CoCoA {
       return p;
 
     // Calculate error values using Forney's algorithm and correct errors
-    if (bch.q == 2) {
+    if (bch.q==2) {
       RingElem f = p;
       for (long j: roots)
         f -= power(x, -((j - bch.qn + 1) % (bch.qn - 1)));

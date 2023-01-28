@@ -64,7 +64,7 @@ namespace CoCoA {
     return ret;
   }
 
-  vector<vector<RingElem>> RM::genXrows(const ring &R, long m) {
+  vector<vector<RingElem>> RM::genXrows(const ring &R, const long m) {
     vector<vector<RingElem>> ret(m);
     const RingElem &zeroR = zero(R);
     const RingElem &oneR = one(R);
@@ -117,7 +117,7 @@ namespace CoCoA {
     return ret;
   }
 
-  vector<long> RM::genRibd(long r, long m) {
+  vector<long> RM::genRibd(const long r, const long m) {
     vector<long> ribd(r + 1, 0);
     for (long i = 1; i <= r; ++i)
       ribd[i] = ribd[i - 1] + binom(m, i);
