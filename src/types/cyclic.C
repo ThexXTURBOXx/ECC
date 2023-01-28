@@ -6,6 +6,12 @@ using namespace std;
 
 namespace CoCoA {
 
+  RingElem dualPoly(ConstRefRingElem g, const long n) {
+    const ring P = owner(g);
+    const RingElem h = (IndetPower(P, UnivariateIndetIndex(g), n) - one(P)) / g;
+    return reverse(h);
+  }
+
   RingElem sysEncodeCyclic(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, const long n, const long k) {
     const RingElem px = p * power(x, n - k);
     const RingElem r = NR(px, {g});
