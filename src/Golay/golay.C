@@ -107,7 +107,7 @@ namespace CoCoA {
   }
 
   matrix decodeG23(const Golay &gol, const matrix &w) {
-    const matrix w24 = NewDenseMat(ConcatHor(w, RowMat({RingElem(gol.R, IsOdd(wt(w)) ? 0:1)})));
+    const matrix w24 = NewDenseMat(ConcatHor(w, RowMat({RingElem(gol.R, IsEven(wt(w)) ? 1:0)})));
 
     vector<long> cols(23);
     iota(begin(cols), end(cols), 0);

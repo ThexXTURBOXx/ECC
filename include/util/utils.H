@@ -8,9 +8,9 @@ using namespace std;
 namespace CoCoA {
 
   template<class T>
-  RingElem getOr(const vector <T> &vec, size_t i, T defaultVal);
+  T getOr(const vector<T> &vec, size_t i, T defaultVal);
 
-  int parseNum(char c);
+  static int parseNum(char c);
 
   char toChar(long i);
 
@@ -23,17 +23,17 @@ namespace CoCoA {
   string toString(const matrix &m);
 
   template<class T>
-  vector <vector<T>> tuples(const vector <T> &set, long tupleSize);
+  vector<vector<T>> tuples(const vector<T> &set, long tupleSize);
 
   template<class T>
-  void subsets(const vector <T> &set, long setSize, vector <vector<T>> &ret);
+  void subsets(const vector<T> &set, long setSize, vector<vector<T>> &ret);
 
   matrix e(const ring &R, long i, const RingElem &b, long n);
 
   template<class T>
-  vector <T> cycShift(const vector <T> &vec, long s);
+  vector<T> cycShift(const vector<T> &vec, long s);
 
-  matrix revCirculantMatrix(const vector <RingElem> &firstRow);
+  matrix revCirculantMatrix(const vector<RingElem> &firstRow);
 
   long wt(const vector<long> &v);
 
@@ -47,7 +47,7 @@ namespace CoCoA {
 
   long ChienSearchSingleRoot(ConstRefRingElem f, ConstRefRingElem a, long qn, ConstRefRingElem x);
 
-  RingElem getUniPoly(const vector <RingElem> &G, long indetIndex, ConstRefRingElem fallback);
+  RingElem getUniPoly(const vector<RingElem> &G, long indetIndex, ConstRefRingElem fallback);
 
   long binom(long n, long k);
 

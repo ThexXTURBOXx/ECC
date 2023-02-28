@@ -7,13 +7,16 @@ using namespace std;
 namespace CoCoA {
 
   template<class T>
-  RingElem getOr(const vector<T> &vec, const size_t i, T defaultVal) {
+  T getOr(const vector<T> &vec, const size_t i, T defaultVal) {
     if (i < 0 || i >= vec.size())
       return defaultVal;
     return vec[i];
   }
 
-  int parseNum(const char c) {
+  // Explicitly generate template function to avoid linker errors
+  template RingElem getOr<RingElem>(const vector<RingElem> &, const size_t, RingElem);
+
+  static int parseNum(const char c) {
     if (c >= '0' && c <= '9')
       return c - '0';
     if (c >= 'A' && c <= 'Z')
@@ -36,8 +39,9 @@ namespace CoCoA {
   RingElem toPolynomial(const string &str, ConstRefRingElem x) {
     const long k = (long) str.size();
     RingElem poly = zero(owner(x));
-    for (long i = 0; i < k; ++i) {
+    for (long i = 0; i < k; ++i)
       poly += parseNum(str[i]) * power(x, k - i - 1);
+    return poly;
     }
     return poly;
   }

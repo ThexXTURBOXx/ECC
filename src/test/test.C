@@ -42,7 +42,7 @@ namespace CoCoA {
     long c = 1;
     RingElem a(Rx, "alpha");
     RingElem g = toPolynomial("10100110111", x);
-    BCH bch(q, qn, n, k, d, c, a, g);
+    BCH bch(q, qn, n, k, d, c, a, g, x);
 
     // Encode
 
@@ -54,7 +54,7 @@ namespace CoCoA {
 
     // Systematic encoding
     cout << toString(p * power(x, n - k), n, x) << endl;
-    RingElem sent = encodeBCH(bch, p, x);
+    RingElem sent = encodeBCH(bch, p);
     cout << toString(sent, n, x) << endl;
 
     // Decoding
@@ -66,10 +66,10 @@ namespace CoCoA {
 
     cout << "---" << endl;
 
-    RingElem dec1 = decodeBCH(bch, recv1, x);
-    RingElem dec2 = decodeBCH(bch, recv2, x);
-    RingElem dec3 = decodeBCH(bch, recv3, x);
-    RingElem dec4 = decodeBCH(bch, recv4, x);
+    RingElem dec1 = decodeBCH(bch, recv1);
+    RingElem dec2 = decodeBCH(bch, recv2);
+    RingElem dec3 = decodeBCH(bch, recv3);
+    RingElem dec4 = decodeBCH(bch, recv4);
 
     cout << toString(dec1, n, x) << endl;
     cout << toString(dec2, n, x) << endl;
@@ -105,13 +105,13 @@ namespace CoCoA {
     d = 5;
     c = 1;
     g = toPolynomial("121102", x);
-    BCH bch2(q, qn, n, k, d, c, a, g);
+    BCH bch2(q, qn, n, k, d, c, a, g, x);
 
     // Encode
 
     // Example word to encode
     p = toPolynomial("201", x);
-    sent = encodeBCH(bch2, p, x);
+    sent = encodeBCH(bch2, p);
     cout << toString(sent, n, x) << endl;
 
     // Decoding
@@ -122,9 +122,9 @@ namespace CoCoA {
 
     cout << "---" << endl;
 
-    dec1 = decodeBCH(bch2, recv1, x);
-    dec2 = decodeBCH(bch2, recv2, x);
-    dec3 = decodeBCH(bch2, recv3, x);
+    dec1 = decodeBCH(bch2, recv1);
+    dec2 = decodeBCH(bch2, recv2);
+    dec3 = decodeBCH(bch2, recv3);
 
     cout << toString(dec1, n, x) << endl;
     cout << toString(dec2, n, x) << endl;
@@ -156,13 +156,13 @@ namespace CoCoA {
     d = 7;
     c = 1;
     g = toPolynomial("1100002001221", x);
-    BCH bch3(q, qn, n, k, d, c, a, g);
+    BCH bch3(q, qn, n, k, d, c, a, g, x);
 
     // Encode
 
     // Example word to encode
     p = toPolynomial("2011211221102", x);
-    sent = encodeBCH(bch3, p, x);
+    sent = encodeBCH(bch3, p);
     cout << toString(sent, n, x) << endl;
 
     // Decoding
@@ -174,10 +174,10 @@ namespace CoCoA {
 
     cout << "---" << endl;
 
-    dec1 = decodeBCH(bch3, recv1, x);
-    dec2 = decodeBCH(bch3, recv2, x);
-    dec3 = decodeBCH(bch3, recv3, x);
-    dec4 = decodeBCH(bch3, recv4, x);
+    dec1 = decodeBCH(bch3, recv1);
+    dec2 = decodeBCH(bch3, recv2);
+    dec3 = decodeBCH(bch3, recv3);
+    dec4 = decodeBCH(bch3, recv4);
 
     cout << toString(dec1, n, x) << endl;
     cout << toString(dec2, n, x) << endl;
@@ -321,13 +321,13 @@ namespace CoCoA {
     } else {
       for (int i = 1; i < argc; ++i) {
         const char *arg = argv[i];
-        if (strcmp(arg, "bch")==0) {
+        if (strcmp(arg, "bch") == 0) {
           bch = true;
-        } else if (strcmp(arg, "ham")==0) {
+        } else if (strcmp(arg, "ham") == 0) {
           ham = true;
-        } else if (strcmp(arg, "golay")==0) {
+        } else if (strcmp(arg, "golay") == 0) {
           golay = true;
-        } else if (strcmp(arg, "rm")==0) {
+        } else if (strcmp(arg, "rm") == 0) {
           rm = true;
         }
       }
