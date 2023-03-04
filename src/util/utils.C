@@ -24,7 +24,6 @@ namespace CoCoA {
     if (c >= 'a' && c <= 'z')
       return c - 'a' + 10;
     CoCoA_THROW_ERROR("Invalid character", __func__);
-    return 0; // Shut up compiler warnings
   }
 
   char toChar(const long i) {
@@ -33,7 +32,6 @@ namespace CoCoA {
     if (i >= 10 && i <= 35)
       return (char) ('A' + (i - 10));
     CoCoA_THROW_ERROR("Invalid number", __func__);
-    return ' '; // Shut up compiler warnings
   }
 
   RingElem toPolynomial(const string &str, ConstRefRingElem x) {
@@ -42,7 +40,13 @@ namespace CoCoA {
     for (long i = 0; i < k; ++i)
       poly += parseNum(str[i]) * power(x, k - i - 1);
     return poly;
-    }
+  }
+
+  RingElem toPolynomial(const matrix &mat, ConstRefRingElem x) {
+    const long k = NumCols(mat);
+    RingElem poly = zero(owner(x));
+    for (long i = 0; i < k; ++i)
+      poly += mat(0, i) * power(x, k - i - 1);
     return poly;
   }
 
@@ -51,6 +55,19 @@ namespace CoCoA {
     matrix m = NewDenseMat(R, 1, k);
     for (long i = 0; i < k; ++i) {
       SetEntry(m, 0, i, parseNum(str[i]));
+    }
+    return m;
+  }
+
+  matrix toMatrix(ConstRefRingElem p, long n, ConstRefRingElem x) {
+    const vector<RingElem> coeffVec = CoeffVecWRT(p, x);
+    const RingElem z = zero(owner(p));
+    matrix m = NewDenseMat(owner(p), 1, n);
+    long buf;
+    for (long i = n - 1; i >= 0; --i) {
+      if (!IsConvertible(buf, getOr(coeffVec, i, z)))
+        CoCoA_THROW_ERROR("Invalid coefficient!", __func__);
+      SetEntry(m, 0, n - (i + 1), buf);
     }
     return m;
   }
@@ -111,7 +128,7 @@ namespace CoCoA {
     template<class T>
     void subsetsInternal(const vector<T> &arr, const int size, const long left, // NOLINT(misc-no-recursion)
                          const int index, vector<T> &l, vector<vector<T>> &bl) {
-      if (left==0) {
+      if (left == 0) {
         bl.push_back(l);
         return;
       }
@@ -208,12 +225,11 @@ namespace CoCoA {
         b[j] *= power(a, j);
     }
     CoCoA_THROW_ERROR("Polynomial does not have a root", __func__);
-    return 0;
   }
 
   RingElem getUniPoly(const vector<RingElem> &G, const long indetIndex, ConstRefRingElem fallback) {
     for (auto &g: G) {
-      if (!IsConstant(g) && UnivariateIndetIndex(g)==indetIndex)
+      if (!IsConstant(g) && UnivariateIndetIndex(g) == indetIndex)
         return g;
     }
     return fallback;
@@ -225,6 +241,12 @@ namespace CoCoA {
     if (!IsConvertible(ret, b))
       CoCoA_THROW_ERROR(ERR::ArgTooBig, "binom");
     return ret;
+  }
+
+  long GetLength(const matrix &m) {
+    long c = m->myNumCols();
+    long r = m->myNumRows();
+    return max(c, r);
   }
 
 }

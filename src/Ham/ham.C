@@ -10,12 +10,12 @@ namespace CoCoA {
   bool sortHam(const vector<long> &a, const vector<long> &b) {
     const long wa = wt(a);
     const long wb = wt(b);
-    if (wa!=wb)
+    if (wa != wb)
       return wa < wb;
 
     const size_t len = a.size();
     for (int i = 0; i < len; ++i) {
-      if (a[i]!=b[i])
+      if (a[i] != b[i])
         return a[i] < b[i];
     }
     return false;
@@ -23,7 +23,7 @@ namespace CoCoA {
 
   bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, const long c) {
     for (size_t i = 0; i < a.size(); ++i) {
-      if (a[i]!=c * b[i])
+      if (a[i] != c * b[i])
         return false;
     }
     return true;
@@ -48,7 +48,7 @@ namespace CoCoA {
     for (const auto &next: tup) {
       if (any_of(next.cbegin(), next.cend(),
                  [](const auto &c) {
-                   return c!=0;
+                   return c != 0;
                  })) {
 
         vector<RingElem> n;
@@ -83,11 +83,10 @@ namespace CoCoA {
     const vector<RingElem> Svec = GetCol(S, 0);
     for (long i = 0; i < ham.n; ++i) {
       const long b = divide(Svec, GetCol(ham.H, i), ham.q);
-      if (b!=0)
+      if (b != 0)
         return w - e(ham.R, i, RingElem(ham.R, b), ham.n);
     }
     CoCoA_THROW_ERROR("Cannot decode!", "Ham");
-    return w; // Shut up compiler warnings
   }
 
 }

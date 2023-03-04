@@ -16,7 +16,11 @@ namespace CoCoA {
 
   RingElem toPolynomial(const string &str, ConstRefRingElem x);
 
+  RingElem toPolynomial(const matrix &mat, ConstRefRingElem x);
+
   matrix toMatrix(const string &str, const ring &R);
+
+  matrix toMatrix(ConstRefRingElem p, long n, ConstRefRingElem x);
 
   string toString(ConstRefRingElem p, long n, ConstRefRingElem x);
 
@@ -50,6 +54,8 @@ namespace CoCoA {
   RingElem getUniPoly(const vector<RingElem> &G, long indetIndex, ConstRefRingElem fallback);
 
   long binom(long n, long k);
+
+  long GetLength(const matrix &m);
 
 }
 

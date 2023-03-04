@@ -49,7 +49,6 @@ namespace CoCoA {
         return G24Mat(R);
       default:
         CoCoA_THROW_ERROR(ERR::BadArg, __func__);
-        return NewDenseMat(ZeroMat(RingZZ(), 1, 1)); // Shut up compiler warnings
     }
   }
 
@@ -58,8 +57,8 @@ namespace CoCoA {
   }
 
   matrix golayMat(const ring &R, const long n) {
-    const matrix G = golayMatPart(n);
-    return NewDenseMat(ConcatHor(IdentityMat(RingOf(G), NumRows(G)), G));
+    const matrix G = golayMatPart(R, n);
+    return NewDenseMat(ConcatHor(IdentityMat(R, NumRows(G)), G));
   }
 
   matrix golayMat(const long n) {
@@ -72,12 +71,10 @@ namespace CoCoA {
 
   matrix decodeG12(const Golay &gol, const matrix &w) {
     CoCoA_THROW_ERROR(ERR::NYI, __func__);
-    return w; // Shut up compiler warnings
   }
 
   matrix decodeG11(const Golay &gol, const matrix &w) {
     CoCoA_THROW_ERROR(ERR::NYI, __func__);
-    return w; // Shut up compiler warnings
   }
 
   // See D.G. Hoffman
@@ -103,7 +100,6 @@ namespace CoCoA {
     }
 
     CoCoA_THROW_ERROR("Cannot decode!", "Golay");
-    return w; // Shut up compiler warnings
   }
 
   matrix decodeG23(const Golay &gol, const matrix &w) {
@@ -126,7 +122,6 @@ namespace CoCoA {
         return decodeG24(gol, w);
       default:
         CoCoA_THROW_ERROR(ERR::BadArg, __func__);
-        return w; // Shut up compiler warnings
     }
   }
 
