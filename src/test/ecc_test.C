@@ -2,7 +2,6 @@
 #include "CoCoA/library.H"
 #include "util/utils.H"
 #include "ecc/bch.H"
-#include "types/cyclic.H"
 #include "ecc/golay.H"
 #include "ecc/ham.H"
 #include "ecc/rm.H"
@@ -19,50 +18,31 @@ namespace CoCoA {
     cout << "========================== BCH ==========================" << endl
          << endl;
 
-    cout << bchGenPoly(1, 7, 2, "alpha^4+alpha+1") << endl;
-    cout << bchGenPoly(1, 5, 3, "alpha^2+alpha+2") << endl;
-    cout << bchGenPoly(1, 7, 3, "alpha^3+2*alpha+1") << endl;
-
-    // Setup
-
-    // F_(2^q)[x]
-    PolyRing Px = NewPolyRing(NewZZmod(2), symbols("alpha"));
-    ideal I(RingElem(Px, "alpha^4+alpha+1"));
-    PolyRing Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-    RingElem x = RingElem(Rx, "x");
-
-    // BCH code from QR-codes
-    // n = 15: length of codewords in the code
-    // k = 5: amount of information bits in codeword (input length)
+    // Setup (BCH code from QR-codes)
     long q = 2;
-    long qn = SmallPower(q, 4);
-    long n = 15;
-    long k = 5;
     long d = 7;
     long c = 1;
-    RingElem a(Rx, "alpha");
-    RingElem g = toPolynomial("10100110111", x);
-    BCH bch(q, qn, n, k, d, c, a, g, x);
+    BCH bch = constructBCH(q, d, c, "alpha^4+alpha+1", "alpha", "x");
 
     // Encode
 
     // Example word to encode
-    RingElem p = toPolynomial("11011", x);
+    RingElem p = toPolynomial("11011", bch.x);
 
     // Non-systematic encoding
-    cout << toString(g * p, n, x) << endl;
+    cout << toString(bch.g * p, bch.n, bch.x) << endl;
 
     // Systematic encoding
-    cout << toString(p * power(x, n - k), n, x) << endl;
+    cout << toString(p * power(bch.x, bch.n - bch.k), bch.n, bch.x) << endl; // Shifted original poly
     RingElem sent = encodeBCH(bch, p);
-    cout << toString(sent, n, x) << endl;
+    cout << toString(sent, bch.n, bch.x) << endl;
 
     // Decoding
 
     RingElem recv1 = sent;
-    RingElem recv2 = sent + power(x, 2);
-    RingElem recv3 = sent + power(x, 13) + power(x, 5);
-    RingElem recv4 = sent + power(x, 8) + power(x, 2) + 1;
+    RingElem recv2 = sent + power(bch.x, 2);
+    RingElem recv3 = sent + power(bch.x, 13) + power(bch.x, 5);
+    RingElem recv4 = sent + power(bch.x, 8) + power(bch.x, 2) + 1;
 
     cout << "---" << endl;
 
@@ -71,54 +51,43 @@ namespace CoCoA {
     RingElem dec3 = decodeBCH(bch, recv3);
     RingElem dec4 = decodeBCH(bch, recv4);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
-    cout << toString(dec4, n, x) << endl;
+    cout << toString(dec1, bch.n, bch.x) << endl;
+    cout << toString(dec2, bch.n, bch.x) << endl;
+    cout << toString(dec3, bch.n, bch.x) << endl;
+    cout << toString(dec4, bch.n, bch.x) << endl;
 
-    dec1 = decodeCyclicGroebner(g, recv1, x, a, q, n, qn);
-    dec2 = decodeCyclicGroebner(g, recv2, x, a, q, n, qn);
-    dec3 = decodeCyclicGroebner(g, recv3, x, a, q, n, qn);
-    dec4 = decodeCyclicGroebner(g, recv4, x, a, q, n, qn);
+    dec1 = decodeBCHGroebner(bch, recv1);
+    dec2 = decodeBCHGroebner(bch, recv2);
+    dec3 = decodeBCHGroebner(bch, recv3);
+    dec4 = decodeBCHGroebner(bch, recv4);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
-    cout << toString(dec4, n, x) << endl;
+    cout << toString(dec1, bch.n, bch.x) << endl;
+    cout << toString(dec2, bch.n, bch.x) << endl;
+    cout << toString(dec3, bch.n, bch.x) << endl;
+    cout << toString(dec4, bch.n, bch.x) << endl;
 
     cout << "=============================" << endl;
 
     // 97-Article%20Text-328-1-10-20180907.pdf
-    // Setup
+    // Setup (Example ternary BCH Code)
 
-    Px = NewPolyRing(NewZZmod(3), symbols("alpha"));
-    I = ideal(RingElem(Px, "alpha^2+alpha+2"));
-    Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-    x = RingElem(Rx, "x");
-
-    // Example ternary BCH Code
     q = 3;
-    qn = SmallPower(3, 2);
-    n = 8;
-    k = 3;
-    a = RingElem(Rx, "alpha");
     d = 5;
     c = 1;
-    g = toPolynomial("121102", x);
-    BCH bch2(q, qn, n, k, d, c, a, g, x);
+    BCH bch2 = constructBCH(q, d, c, "alpha^2+alpha+2", "alpha", "x");
 
     // Encode
 
     // Example word to encode
-    p = toPolynomial("201", x);
+    p = toPolynomial("201", bch2.x);
     sent = encodeBCH(bch2, p);
-    cout << toString(sent, n, x) << endl;
+    cout << toString(sent, bch2.n, bch2.x) << endl;
 
     // Decoding
 
     recv1 = sent;
-    recv2 = sent + 2 * power(x, 2);
-    recv3 = sent + power(x, 5) + 2;
+    recv2 = sent + 2 * power(bch2.x, 2);
+    recv3 = sent + power(bch2.x, 5) + 2;
 
     cout << "---" << endl;
 
@@ -126,51 +95,40 @@ namespace CoCoA {
     dec2 = decodeBCH(bch2, recv2);
     dec3 = decodeBCH(bch2, recv3);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
+    cout << toString(dec1, bch2.n, bch2.x) << endl;
+    cout << toString(dec2, bch2.n, bch2.x) << endl;
+    cout << toString(dec3, bch2.n, bch2.x) << endl;
 
-    dec1 = decodeCyclicGroebner(g, recv1, x, a, q, n, qn);
-    dec2 = decodeCyclicGroebner(g, recv2, x, a, q, n, qn);
-    dec3 = decodeCyclicGroebner(g, recv3, x, a, q, n, qn);
+    dec1 = decodeBCHGroebner(bch2, recv1);
+    dec2 = decodeBCHGroebner(bch2, recv2);
+    dec3 = decodeBCHGroebner(bch2, recv3);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
+    cout << toString(dec1, bch2.n, bch2.x) << endl;
+    cout << toString(dec2, bch2.n, bch2.x) << endl;
+    cout << toString(dec3, bch2.n, bch2.x) << endl;
 
     cout << "=============================" << endl;
 
-    // Setup
+    // Setup (Example ternary code)
 
-    Px = NewPolyRing(NewZZmod(3), symbols("alpha"));
-    I = ideal(RingElem(Px, "alpha^3+2*alpha+1"));
-    Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-    x = RingElem(Rx, "x");
-
-    // Example ternary BCH Code
     q = 3;
-    qn = SmallPower(3, 3);
-    n = 26;
-    k = 13;
-    a = RingElem(Rx, "alpha");
     d = 7;
     c = 1;
-    g = toPolynomial("1100002001221", x);
-    BCH bch3(q, qn, n, k, d, c, a, g, x);
+    BCH bch3 = constructBCH(q, d, c, "alpha^3+2*alpha+1", "alpha", "x");
 
     // Encode
 
     // Example word to encode
-    p = toPolynomial("2011211221102", x);
+    p = toPolynomial("2011211221102", bch3.x);
     sent = encodeBCH(bch3, p);
-    cout << toString(sent, n, x) << endl;
+    cout << toString(sent, bch3.n, bch3.x) << endl;
 
     // Decoding
 
     recv1 = sent;
-    recv2 = sent + 2 * power(x, 2);
-    recv3 = sent + power(x, 5) + 2;
-    recv4 = sent + 2 * power(x, 7) + power(x, 4) + 1;
+    recv2 = sent + 2 * power(bch3.x, 2);
+    recv3 = sent + power(bch3.x, 5) + 2;
+    recv4 = sent + 2 * power(bch3.x, 7) + power(bch3.x, 4) + 1;
 
     cout << "---" << endl;
 
@@ -179,20 +137,20 @@ namespace CoCoA {
     dec3 = decodeBCH(bch3, recv3);
     dec4 = decodeBCH(bch3, recv4);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
-    cout << toString(dec4, n, x) << endl;
+    cout << toString(dec1, bch3.n, bch3.x) << endl;
+    cout << toString(dec2, bch3.n, bch3.x) << endl;
+    cout << toString(dec3, bch3.n, bch3.x) << endl;
+    cout << toString(dec4, bch3.n, bch3.x) << endl;
 
-    dec1 = decodeCyclicGroebner(g, recv1, x, a, q, n, qn);
-    dec2 = decodeCyclicGroebner(g, recv2, x, a, q, n, qn);
-    dec3 = decodeCyclicGroebner(g, recv3, x, a, q, n, qn);
-    dec4 = decodeCyclicGroebner(g, recv4, x, a, q, n, qn);
+    dec1 = decodeBCHGroebner(bch3, recv1);
+    dec2 = decodeBCHGroebner(bch3, recv2);
+    dec3 = decodeBCHGroebner(bch3, recv3);
+    dec4 = decodeBCHGroebner(bch3, recv4);
 
-    cout << toString(dec1, n, x) << endl;
-    cout << toString(dec2, n, x) << endl;
-    cout << toString(dec3, n, x) << endl;
-    cout << toString(dec4, n, x) << endl;
+    cout << toString(dec1, bch3.n, bch3.x) << endl;
+    cout << toString(dec2, bch3.n, bch3.x) << endl;
+    cout << toString(dec3, bch3.n, bch3.x) << endl;
+    cout << toString(dec4, bch3.n, bch3.x) << endl;
   }
 
   void testGolayECC() {

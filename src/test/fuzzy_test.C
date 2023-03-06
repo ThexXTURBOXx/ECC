@@ -7,7 +7,6 @@
 #include "ecc/ham.H"
 #include "ecc/rm.H"
 #include "fuzzy/fuzzy.H"
-#include "types/cyclic.H"
 
 using namespace std;
 using namespace std::placeholders;
@@ -22,24 +21,12 @@ namespace CoCoA {
     cout << "========================== BCH ==========================" << endl
          << endl;
 
-    PolyRing Px = NewPolyRing(NewZZmod(2), symbols("alpha"));
-    ideal I(RingElem(Px, "alpha^4+alpha+1"));
-    PolyRing Rx = NewPolyRing(NewQuotientRing(Px, I), symbols("x"));
-    RingElem x = RingElem(Rx, "x");
-
-    // BCH code from QR-codes
-    // n = 15: length of codewords in the code
-    // k = 5: amount of information bits in codeword (input length)
+    // Setup (BCH code from QR-codes)
     long q = 2;
-    long qn = SmallPower(q, 4);
-    long n = 15;
-    long k = 5;
     long d = 7;
     long c = 1;
-    RingElem a(Rx, "alpha");
-    RingElem g = toPolynomial("10100110111", x);
-    BCH bch(q, qn, n, k, d, c, a, g, x);
-    RingElem w = toPolynomial("110111001010100", x);
+    BCH bch = constructBCH(q, d, c, "alpha^4+alpha+1", "alpha", "x");
+    RingElem w = toPolynomial("110111001010100", bch.x);
 
     // std::bind is also a possibility here, but Clang-Tidy complains!
     FuzzyExtractor ext([bch](auto &&w) {
@@ -52,12 +39,12 @@ namespace CoCoA {
                        },
                        5, 10);
 
-    matrix original = ext.generateHelperData(toMatrix(w, n, x));
+    matrix original = ext.generateHelperData(toMatrix(w, bch.n, bch.x));
     cout << toString(original) << endl;
-    cout << toString(ext.extract(toMatrix(w, n, x))) << endl;
-    cout << toString(ext.extract(toMatrix(w + power(x, 2), n, x))) << endl;
-    cout << toString(ext.extract(toMatrix(w + power(x, 13) + power(x, 5), n, x))) << endl;
-    cout << toString(ext.extract(toMatrix(w + power(x, 8) + power(x, 2) + 1, n, x))) << endl;
+    cout << toString(ext.extract(toMatrix(w, bch.n, bch.x))) << endl;
+    cout << toString(ext.extract(toMatrix(w + power(bch.x, 2), bch.n, bch.x))) << endl;
+    cout << toString(ext.extract(toMatrix(w + power(bch.x, 13) + power(bch.x, 5), bch.n, bch.x))) << endl;
+    cout << toString(ext.extract(toMatrix(w + power(bch.x, 8) + power(bch.x, 2) + 1, bch.n, bch.x))) << endl;
 
     cout << "---" << endl;
 
@@ -69,17 +56,16 @@ namespace CoCoA {
                                           bch.n, bch.x);
                         },
                         [bch](auto &&w) {
-                          return toMatrix(decodeCyclicGroebner(bch.g,
-                                                               toPolynomial(std::forward<decltype(w)>(w), bch.x),
-                                                               bch.x, bch.a, bch.q, bch.n, bch.qn), bch.n, bch.x);
+                          return toMatrix(decodeBCHGroebner(bch, toPolynomial(std::forward<decltype(w)>(w), bch.x)),
+                                          bch.n, bch.x);
                         },
                         5, 10, ext.getHelperData());
 
     cout << toString(original) << endl;
-    cout << toString(ext2.extract(toMatrix(w, n, x))) << endl;
-    cout << toString(ext2.extract(toMatrix(w + power(x, 2), n, x))) << endl;
-    cout << toString(ext2.extract(toMatrix(w + power(x, 13) + power(x, 5), n, x))) << endl;
-    cout << toString(ext2.extract(toMatrix(w + power(x, 8) + power(x, 2) + 1, n, x))) << endl;
+    cout << toString(ext2.extract(toMatrix(w, bch.n, bch.x))) << endl;
+    cout << toString(ext2.extract(toMatrix(w + power(bch.x, 2), bch.n, bch.x))) << endl;
+    cout << toString(ext2.extract(toMatrix(w + power(bch.x, 13) + power(bch.x, 5), bch.n, bch.x))) << endl;
+    cout << toString(ext2.extract(toMatrix(w + power(bch.x, 8) + power(bch.x, 2) + 1, bch.n, bch.x))) << endl;
   }
 
   void testGolayFuzzy() {
