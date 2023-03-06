@@ -23,6 +23,7 @@ namespace CoCoA {
     long d = 7;
     long c = 1;
     BCH bch = constructBCH(q, d, c, "alpha^4+alpha+1", "alpha", "x");
+    cout << bch.g << endl;
 
     // Encode
 
@@ -75,6 +76,7 @@ namespace CoCoA {
     d = 5;
     c = 1;
     BCH bch2 = constructBCH(q, d, c, "alpha^2+alpha+2", "alpha", "x");
+    cout << bch2.g << endl;
 
     // Encode
 
@@ -115,6 +117,7 @@ namespace CoCoA {
     d = 7;
     c = 1;
     BCH bch3 = constructBCH(q, d, c, "alpha^3+2*alpha+1", "alpha", "x");
+    cout << bch3.g << endl;
 
     // Encode
 
