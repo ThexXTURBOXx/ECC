@@ -249,4 +249,81 @@ namespace CoCoA {
     return max(c, r);
   }
 
+  bool IsPrimitivePoly_NoArgChecks(ConstRefRingElem f) {
+    const char *const FnName = "IsPrimitivePoly_NoArgChecks";
+
+    if (IsZero(ConstantCoeff(f))) return false;
+    if (!IsOne(LC(f))) return false;
+    if (!IsIrred(f)) return false;
+
+    const ring &Px = owner(f);
+    const RingElem &x = indet(Px, UnivariateIndetIndex(f));
+
+    // We check if f is an n-th primitive polynomial in ZZ/(p)
+    const long n = deg(f);
+    const BigInt p = characteristic(CoeffRing(Px));
+    const BigInt M = power(p, n) - 1;
+    const vector<BigInt> fac = factor(M).myFactors();
+    return none_of(fac.begin(), fac.end(), [f, x, M](const BigInt &m) {
+      return IsOne(NR(power(x, M / m), {f}));
+    });
+  }
+
+  bool IsPrimitivePoly(ConstRefRingElem f) {
+    const char *const FnName = "IsPrimitivePoly";
+
+    if (IsZero(f)) return false;
+    const ring &Px = owner(f);
+    if (!IsSparsePolyRing(Px))
+      CoCoA_THROW_ERROR(ERR::NotSparsePolyRing, FnName);
+    const long IndetIndex = UnivariateIndetIndex(f);
+    if (IndetIndex < 0)
+      CoCoA_THROW_ERROR(ERR::NotUnivariate, FnName);
+    const ring &P = CoeffRing(Px);
+    if (!IsFiniteField(P) || !IsQuotientRing(P) || !IsZZ(BaseRing(P))) // TODO: Does that only allow ZZ/(p)?
+      CoCoA_THROW_ERROR(ERR::BadRing, FnName);
+    const RingElem &x = indet(Px, IndetIndex);
+
+    return IsPrimitivePoly_NoArgChecks(f);
+  }
+
+  RingElem BruteForcePrimPoly(const ring &Px, const long n, const long IndetIndex) {
+    const char *const FnName = "BruteForcePrimPoly";
+
+    if (n < 1)
+      CoCoA_THROW_ERROR(ERR::BadArg, FnName);
+    if (!IsSparsePolyRing(Px))
+      CoCoA_THROW_ERROR(ERR::NotSparsePolyRing, FnName);
+    const ring &P = CoeffRing(Px);
+    if (!IsFiniteField(P) || !IsQuotientRing(P) || !IsZZ(BaseRing(P))) // TODO: Does that only allow ZZ/(p)?
+      CoCoA_THROW_ERROR(ERR::BadRing, FnName);
+    const RingElem &x = indet(Px, IndetIndex);
+
+    const BigInt p = characteristic(P);
+    if (n == 1) {
+      RingElem f = x + 1;
+      for (long i = 1; i < p; ++i) {
+        if (IsPrimitivePoly_NoArgChecks(f))
+          return f;
+        f += 1;
+      }
+    }
+
+    // Randomized version
+    RandomSeqBigInt seqNonZero(1, p - 1);
+    RandomSeqBigInt seqDef(0, p - 1);
+    RingElem f = power(x, n) + *seqNonZero;
+    ++seqNonZero;
+    while (true) {
+      for (long i = 1; i < n; ++i) {
+        f += *seqDef * power(x, i);
+        ++seqDef;
+      }
+      if (IsPrimitivePoly_NoArgChecks(f))
+        return f;
+      f = power(x, n) + *seqNonZero;
+      ++seqNonZero;
+    }
+  }
+
 }

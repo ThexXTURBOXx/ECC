@@ -57,6 +57,10 @@ namespace CoCoA {
 
   long GetLength(const matrix &m);
 
+  bool IsPrimitivePoly(ConstRefRingElem f);
+
+  RingElem BruteForcePrimPoly(const ring &Px, long n, long IndetIndex);
+
 }
 
 #endif // ECC_UTILS_H
