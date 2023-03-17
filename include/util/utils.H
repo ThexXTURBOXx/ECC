@@ -51,13 +51,14 @@ namespace CoCoA {
 
   long ChienSearchSingleRoot(ConstRefRingElem f, ConstRefRingElem a, long qn, ConstRefRingElem x);
 
-  RingElem getUniPoly(const vector<RingElem> &G, long indetIndex, ConstRefRingElem fallback);
+  RingElem getUniPoly(const vector<RingElem> &G, long IndetIndex, ConstRefRingElem fallback);
 
   long binom(long n, long k);
 
   long GetLength(const matrix &m);
 
-  bool IsPrimitivePoly(ConstRefRingElem f);
+  // As of CoCoALib 0.99815, this has been incorporated into CoCoALib itself
+  /*bool IsPrimitivePoly(ConstRefRingElem f);*/
 
   RingElem BruteForcePrimPoly(const ring &Px, long n, long IndetIndex);
 
