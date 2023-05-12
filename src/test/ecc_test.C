@@ -277,10 +277,10 @@ namespace CoCoA {
   void exampleECC(const int argc, const char *argv[]) {
     bool all = false, bch = false, golay = false, ham = false, rm = false;
 
-    if (argc <= 1) {
+    if (argc <= 0) {
       all = true;
     } else {
-      for (int i = 1; i < argc; ++i) {
+      for (int i = 0; i < argc; ++i) {
         const char *arg = argv[i];
         if (strcmp(arg, "bch") == 0) {
           bch = true;
