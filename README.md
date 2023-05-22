@@ -7,7 +7,7 @@ Error correction code implementations in CoCoALib
 1. Download the [CoCoALib](https://cocoa.dima.unige.it/cocoa/cocoalib/) source code (tested with `0.99815`, snapshots
    available [here](https://cocoa.dima.unige.it/cocoa/cocoalib/snapshot.shtml))
 2. Extract the archive into `cocoalib/`
-3. Maybe, you need to apply the patch mentioned in [Fix LaTeX errors](fix-latex-errors)
+3. Maybe, you need to apply the patch mentioned in [Fix LaTeX errors](#fix-latex-errors)
 4. Install [GMP](https://gmplib.org/) using your favorite package manager or compile it yourself
 5. Install a valid LaTeX distribution like [TeXLive](https://www.tug.org/texlive/) or [MikTeX](https://miktex.org/)
 6. Install the latest version of [txt2tags 2.7-dev](https://txt2tags.org/) along with a compatible [Python](https://www.python.org/) version
@@ -16,6 +16,8 @@ Error correction code implementations in CoCoALib
 9. Build the resulting executables using `cmake --build`
 
 ## Fix LaTeX errors
+
+**Update: CoCoALib >0.99817 should not have this issue anymore!**
 
 In my tests, at least on Windows, there may be LaTeX compilation errors in the CoCoALib documentation that look similar to this:
 ```
