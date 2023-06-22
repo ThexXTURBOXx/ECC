@@ -49,13 +49,13 @@ namespace CoCoA {
       toHash[i] = IsOne(w(0, i));
 
     SHA256 sha256;
-    sha256.update(ToString(w)); // As long as ToString does not change, let's use that
+    sha256.update(toHash, len);
     const uint8_t *hash = sha256.digest();
 
-    matrix ext = NewDenseMat(RingOf(w), 1, 32 * 8);
-    for (int i = 0; i < 32; ++i) {
+    matrix ext = NewDenseMat(RingOf(w), 1, 256);
+    for (int i = 0; i < 32 / sizeof(uint8_t); ++i) {
       const uint8_t num = hash[i];
-      for (int j = 7; j >= 0; --j)
+      for (int j = (sizeof(uint8_t) * 8) - 1; j >= 0; --j)
         SetEntry(ext, 0, i * 8 + j, (num >> j) & 1);
     }
 
