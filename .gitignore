@@ -10,3 +10,6 @@ build/
 # CoCoALib related files
 cocoalib/**
 !cocoalib/.gitkeep
+
+# Doxygen
+doxygen/

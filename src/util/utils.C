@@ -13,7 +13,9 @@ namespace CoCoA {
     return vec[i];
   }
 
-  // Explicitly generate template function to avoid linker errors
+  /**
+   * Explicitly generated template function to avoid linker errors.
+   */
   template RingElem getOr<RingElem>(const vector<RingElem> &, const size_t, RingElem);
 
   static int parseNum(const char c) {
@@ -118,13 +120,28 @@ namespace CoCoA {
     return result;
   }
 
-  // Explicitly generate template function to avoid linker errors
+  /**
+   * Explicitly generated template function to avoid linker errors.
+   */
   template vector<vector<long>> tuples<long>(const vector<long> &, const long);
 
+  /**
+   * Explicitly generated template function to avoid linker errors.
+   */
   template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, const long);
 
   namespace { /* anonymous */
-    // Improved version from examples/ex-MVT-Simplicial.C in CoCoALib
+    /**
+     * Recursive function to calculate all subsets of a given size of a given set.
+     * @tparam T The generic type of the vector
+     * @param arr The set of which the subsets should be calculated
+     * @param size The size of the set
+     * @param left The number of elements that should still be added to the subset
+     * @param index The index of the current element
+     * @param l The current subset
+     * @param bl The buffer for the set of all subsets
+     * @see This is an improved version of `examples/ex-MVT-Simplicial.C` in CoCoALib
+     */
     template<class T>
     void subsetsInternal(const vector<T> &arr, const int size, const long left, // NOLINT(misc-no-recursion)
                          const int index, vector<T> &l, vector<vector<T>> &bl) {
@@ -146,9 +163,14 @@ namespace CoCoA {
     return subsetsInternal(set, set.size(), setSize, 0, buf, ret);
   }
 
-  // Explicitly generate template function to avoid linker errors
+  /**
+   * Explicitly generated template function to avoid linker errors.
+   */
   template void subsets<long>(const vector<long> &, const long, vector<vector<long>> &);
 
+  /**
+   * Explicitly generated template function to avoid linker errors.
+   */
   template void subsets<RingElem>(const vector<RingElem> &, const long, vector<vector<RingElem>> &);
 
   matrix e(const ring &R, const long i, const RingElem &b, const long n) {
@@ -251,6 +273,11 @@ namespace CoCoA {
 
   // As of CoCoALib 0.99815, these have been incorporated into CoCoALib itself
   /*
+   * Checks if f is a primitive polynomial in ZZ/(p), skipping sanity checks.
+   * @param f The polynomial to check
+   * @return Whether f is primitive
+   */
+  /*
   bool IsPrimitivePoly_NoArgChecks(ConstRefRingElem f) {
     if (IsZero(ConstantCoeff(f))) return false;
     if (!IsOne(LC(f))) return false;
@@ -284,7 +311,7 @@ namespace CoCoA {
 
     return IsPrimitivePoly_NoArgChecks(f);
   }
-   */
+  */
 
   RingElem BruteForcePrimPoly(const ring &Px, const long n, const long IndetIndex) {
     const char *const FnName = "BruteForcePrimPoly";
@@ -307,7 +334,7 @@ namespace CoCoA {
       }
     }
 
-    // Randomized version
+    // Randomised version
     RandomSeqBigInt seqNonZero(1, p - 1);
     RandomSeqBigInt seqDef(0, p - 1);
     RingElem f = IndetPower(Px, IndetIndex, n) + *seqNonZero;

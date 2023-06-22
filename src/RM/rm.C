@@ -25,7 +25,7 @@ namespace CoCoA {
     vector<vector<RingElem>>
     generateAllRows(const ring &R, const long m, const vector<long> &S, const long off) { // NOLINT(misc-no-recursion)
       const long size = SmallPower(2, m);
-      if (off==S.size())
+      if (off == S.size())
         return {vector<RingElem>(size, one(R))};
 
       vector<vector<RingElem>> Srest = generateAllRows(R, m, S, off + 1);
@@ -109,7 +109,7 @@ namespace CoCoA {
       for (const auto &S: Ss) {
         vector<long> is;
         for (long i = 0; i < m; ++i)
-          if (find(S.cbegin(), S.cend(), i)==S.cend())
+          if (find(S.cbegin(), S.cend(), i) == S.cend())
             is.push_back(i); // All the i not contained in S
         ret.push_back(generateAllRows(R, m, is));
       }
@@ -133,7 +133,7 @@ namespace CoCoA {
     RingElem scalarProductTemp = zero(rm.R);
     for (long degree = rm.r; degree >= 0; --degree) {
       long upperR = rm.ribd[degree];
-      long lowerR = degree==0 ? 0:rm.ribd[degree - 1] + 1;
+      long lowerR = degree == 0 ? 0:rm.ribd[degree - 1] + 1;
 
       for (long pos = lowerR; pos <= upperR; ++pos) {
         long ones = 0;
@@ -150,7 +150,7 @@ namespace CoCoA {
             ++ones;
         }
 
-        if (ones==zeros)
+        if (ones == zeros)
           CoCoA_THROW_ERROR("Cannot decode!", "RM");
 
         SetEntry(word, 0, pos, zeros > ones ? 0:1);

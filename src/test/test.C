@@ -1,11 +1,5 @@
 #include <cstring>
 #include "CoCoA/library.H"
-#include "util/utils.H"
-#include "ecc/bch.H"
-#include "types/cyclic.H"
-#include "ecc/golay.H"
-#include "ecc/ham.H"
-#include "ecc/rm.H"
 
 using namespace std;
 
@@ -16,9 +10,9 @@ const string description = "This file provides simple examples for this software
 namespace CoCoA {
 
   // Forward decl -- start
-  void exampleECC(const int argc, const char *argv[]);
+  void exampleECC(int argc, const char *argv[]);
 
-  void exampleFuzzy(const int argc, const char *argv[]);
+  void exampleFuzzy(int argc, const char *argv[]);
   // Forward decl -- end
 
   void program(const int argc, const char *argv[]) {

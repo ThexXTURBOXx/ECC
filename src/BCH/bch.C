@@ -31,7 +31,16 @@ namespace CoCoA {
     return {q, qn, n, k, d, c, a, g, indet};
   }
 
-  // From Jungnickel
+  /**
+   * Calculates the error locator polynomial using the Peterson-Gorenstein-Zierler algorithm.
+   * @param p The generator polynomial
+   * @param x The variable
+   * @param s The necessary syndromes
+   * @param v The number of errors that can be corrected
+   * @return The error locator polynomial
+   * @see Gorenstein, D., Peterson, W. W., & Zierler, N. (1960). Two-error correcting Bose-Chaudhuri codes are
+   * quasi-perfect
+   */
   RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x, const vector<RingElem> &s, long v) {
     const ring &Px = owner(p);
 
@@ -70,6 +79,16 @@ namespace CoCoA {
     return ret;
   }
 
+  /**
+   * Calculates the error values using the Forney algorithm.
+   * @param bch The {@link BCH} code
+   * @param s The list of necessary syndromes
+   * @param e The error locator polynomial
+   * @param roots The roots of the error locator polynomial
+   * @param x The variable
+   * @return The error polynomial
+   * @see Forney, G. (1965). On decoding BCH codes
+   */
   RingElem Forney(const BCH &bch, const vector<RingElem> &s, ConstRefRingElem e, const vector<long> &roots,
                   ConstRefRingElem x) {
     const ring &Px = owner(e);
