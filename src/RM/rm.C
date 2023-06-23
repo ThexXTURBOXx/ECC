@@ -9,6 +9,15 @@ using namespace std;
 namespace CoCoA {
 
   namespace { /* anonymous */
+    /**
+     * Calculates the row which corresponds to the variable `x_i` of the code.
+     * @param zeroR The zero element of the ring
+     * @param oneR The one element of the ring
+     * @param size The size of the row
+     * @param m The variety of the code
+     * @param i The index of the variable
+     * @return The row which corresponds to the variable `x_i` of the code
+     */
     vector<RingElem> constructVector(ConstRefRingElem zeroR, ConstRefRingElem oneR, const long size,
                                      const long m, const long i) {
       vector<RingElem> ret(size, zeroR);
@@ -22,6 +31,14 @@ namespace CoCoA {
       return ret;
     }
 
+    /**
+     * Recursively calculates all rows over the monomials in the given set.
+     * @param R The ring over which the code is defined
+     * @param m The variety of the code
+     * @param S The set of monomials
+     * @param off The offset of the current monomial
+     * @return The list of all rows over the monomials in the given set
+     */
     vector<vector<RingElem>>
     generateAllRows(const ring &R, const long m, const vector<long> &S, const long off) { // NOLINT(misc-no-recursion)
       const long size = SmallPower(2, m);
@@ -48,6 +65,13 @@ namespace CoCoA {
       return ret;
     }
 
+    /**
+     * Calculates all rows over the monomials in the given set.
+     * @param R The ring over which the code is defined
+     * @param m The variety of the code
+     * @param S The set of monomials
+     * @return The list of all rows over the monomials in the given set
+     */
     vector<vector<RingElem>> generateAllRows(const ring &R, const long m, const vector<long> &S) {
       return generateAllRows(R, m, S, 0);
     }

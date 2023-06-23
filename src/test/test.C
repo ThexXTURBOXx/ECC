@@ -15,6 +15,11 @@ namespace CoCoA {
   void exampleFuzzy(int argc, const char *argv[]);
   // Forward decl -- end
 
+  /**
+   * Delegates the program to the appropriate function.
+   * @param argc The number of arguments
+   * @param argv The arguments
+   */
   void program(const int argc, const char *argv[]) {
     GlobalManager CoCoAFoundations(UseNonNegResidues);
     SignalWatcher MonitorInterrupt(SIGINT); // you must also call CheckForInterrupt every so often
@@ -37,6 +42,12 @@ namespace CoCoA {
 
 }
 
+/**
+ * Entry point of the test program.
+ * @param argc The number of arguments
+ * @param argv The arguments
+ * @return The exit code
+ */
 int main(const int argc, const char *argv[]) {
   try {
     CoCoA::program(argc, argv);

@@ -35,6 +35,8 @@ namespace CoCoA {
 
     /**
      * Creates a new {@link HelperData} object with the given data.
+     * @param s The first part of the helper data
+     * @param x The second part of the helper data
      */
     HelperData(const matrix &s, const matrix &x) : s(s), x(x) {
     }

@@ -12,11 +12,17 @@ using namespace std;
 using namespace std::placeholders;
 
 //----------------------------------------------------------------------
+/**
+ * Description of this file.
+ */
 const string description = "This file provides simple examples of Fuzzy Extractors.\n";
 //----------------------------------------------------------------------
 
 namespace CoCoA {
 
+  /**
+   * Tests fuzzy extractors based on {@link BCH} codes.
+   */
   void testBCHFuzzy() {
     cout << "========================== BCH ==========================" << endl
          << endl;
@@ -68,6 +74,9 @@ namespace CoCoA {
     cout << toString(ext2.extract(toMatrix(w + power(bch.x, 8) + power(bch.x, 2) + 1, bch.n, bch.x))) << endl;
   }
 
+  /**
+   * Tests fuzzy extractors based on {@link Golay} codes.
+   */
   void testGolayFuzzy() {
     cout << "========================== Golay ==========================" << endl
          << endl;
@@ -93,6 +102,9 @@ namespace CoCoA {
     cout << toString(ext.extract(w + toMatrix("000000000000011100000000", g24.R))) << endl;
   }
 
+  /**
+   * Tests fuzzy extractors based on {@link Ham} codes.
+   */
   void testHamFuzzy() {
     cout << "========================== Ham ==========================" << endl
          << endl;
@@ -117,6 +129,9 @@ namespace CoCoA {
     cout << toString(ext.extract(w + toMatrix("0100010", ham.R))) << endl;
   }
 
+  /**
+   * Tests fuzzy extractors based on {@link RM} codes.
+   */
   void testRMFuzzy() {
     cout << "========================== RM ==========================" << endl
          << endl;
@@ -142,6 +157,11 @@ namespace CoCoA {
     cout << toString(ext.extract(w + toMatrix("10000001000000000000000000010000", rm.R))) << endl;
   }
 
+  /**
+   * Tests the fuzzy extractors defined through the input arguments.
+   * @param argc The number of arguments
+   * @param argv The arguments
+   */
   void exampleFuzzy(const int argc, const char *argv[]) {
     bool all = false, bch = false, golay = false, ham = false, rm = false;
 

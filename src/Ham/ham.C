@@ -7,6 +7,13 @@ using namespace std;
 
 namespace CoCoA {
 
+  /**
+   * Provides a comparison function for the columns of the parity check matrix of a Hamming code. First compares by
+   * weight, then lexicographically.
+   * @param a The first column
+   * @param b The second column
+   * @return True if the first column is smaller than the second column
+   */
   bool sortHam(const vector<long> &a, const vector<long> &b) {
     const long wa = wt(a);
     const long wb = wt(b);
@@ -19,22 +26,6 @@ namespace CoCoA {
         return a[i] < b[i];
     }
     return false;
-  }
-
-  bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, const long c) {
-    for (size_t i = 0; i < a.size(); ++i) {
-      if (a[i] != c * b[i])
-        return false;
-    }
-    return true;
-  }
-
-  long divide(const vector<RingElem> &a, const vector<RingElem> &b, const long q) {
-    for (long i = 1; i <= q; ++i) {
-      if (isMultiple(a, b, i))
-        return i;
-    }
-    return 0;
   }
 
   matrix hamH(const ring &R, const long r, const long q) {

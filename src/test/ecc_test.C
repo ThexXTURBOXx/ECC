@@ -9,11 +9,17 @@
 using namespace std;
 
 //----------------------------------------------------------------------
+/**
+ * Description of this file.
+ */
 const string description = "This file provides simple examples of ECCs.\n";
 //----------------------------------------------------------------------
 
 namespace CoCoA {
 
+  /**
+   * Tests the {@link BCH} code.
+   */
   void testBCHECC() {
     cout << "========================== BCH ==========================" << endl
          << endl;
@@ -156,6 +162,9 @@ namespace CoCoA {
     cout << toString(dec4, bch3.n, bch3.x) << endl;
   }
 
+  /**
+   * Tests the {@link Golay} code.
+   */
   void testGolayECC() {
     cout << "========================== Golay ==========================" << endl
          << endl;
@@ -209,6 +218,9 @@ namespace CoCoA {
     cout << toString(decodeGolay(g24, u4 + toMatrix("000000000001110000000000", g24.R))) << endl;
   }
 
+  /**
+   * Tests the {@link Ham} code.
+   */
   void testHamECC() {
     cout << "========================== Ham ==========================" << endl
          << endl;
@@ -249,6 +261,9 @@ namespace CoCoA {
     cout << toString(decodeHam(ham3, u3 + toMatrix("002030", ham3.R))) << endl;
   }
 
+  /**
+   * Tests the {@link RM} code.
+   */
   void testRMECC() {
     cout << "========================== RM ==========================" << endl
          << endl;
@@ -274,6 +289,11 @@ namespace CoCoA {
     cout << toString(decodeRM(rm2, u2 + toMatrix("10000001000000000000000000010000", rm2.R))) << endl;
   }
 
+  /**
+   * Tests the ECCs defined through the input arguments.
+   * @param argc The number of arguments
+   * @param argv The arguments
+   */
   void exampleECC(const int argc, const char *argv[]) {
     bool all = false, bch = false, golay = false, ham = false, rm = false;
 

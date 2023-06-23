@@ -211,6 +211,24 @@ namespace CoCoA {
    */
   RingElem BruteForcePrimPoly(const ring &Px, long n, long IndetIndex);
 
+  /**
+   * Checks if `a = b * c`.
+   * @param a The first vector
+   * @param b The second vector
+   * @param c The scalar
+   * @return Whether `a` is the given multiple of `b`
+   */
+  bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, long c);
+
+  /**
+   * Checks if `a = b * c` and returns `c`.
+   * @param a The first vector
+   * @param b The second vector
+   * @param q The size of the underlying field
+   * @return The scalar `c` if `a = b * c`, otherwise 0
+   */
+  long divide(const vector<RingElem> &a, const vector<RingElem> &b, long q);
+
 }
 
 #endif // ECC_UTILS_H

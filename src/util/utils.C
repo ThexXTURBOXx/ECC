@@ -14,7 +14,8 @@ namespace CoCoA {
   }
 
   /**
-   * Explicitly generated template function to avoid linker errors.
+   * Explicitly instantiate template function to avoid linker errors.
+   * @return {@link getOr}
    */
   template RingElem getOr<RingElem>(const vector<RingElem> &, const size_t, RingElem);
 
@@ -121,12 +122,14 @@ namespace CoCoA {
   }
 
   /**
-   * Explicitly generated template function to avoid linker errors.
+   * Explicitly instantiate template function to avoid linker errors.
+   * @return {@link tuples}
    */
   template vector<vector<long>> tuples<long>(const vector<long> &, const long);
 
   /**
-   * Explicitly generated template function to avoid linker errors.
+   * Explicitly instantiate template function to avoid linker errors.
+   * @return {@link tuples}
    */
   template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, const long);
 
@@ -164,12 +167,12 @@ namespace CoCoA {
   }
 
   /**
-   * Explicitly generated template function to avoid linker errors.
+   * Explicitly instantiate template function to avoid linker errors.
    */
   template void subsets<long>(const vector<long> &, const long, vector<vector<long>> &);
 
   /**
-   * Explicitly generated template function to avoid linker errors.
+   * Explicitly instantiate template function to avoid linker errors.
    */
   template void subsets<RingElem>(const vector<RingElem> &, const long, vector<vector<RingElem>> &);
 
@@ -349,6 +352,22 @@ namespace CoCoA {
       f = IndetPower(Px, IndetIndex, n) + *seqNonZero;
       ++seqNonZero;
     }
+  }
+
+  bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, const long c) {
+    for (size_t i = 0; i < a.size(); ++i) {
+      if (a[i] != c * b[i])
+        return false;
+    }
+    return true;
+  }
+
+  long divide(const vector<RingElem> &a, const vector<RingElem> &b, const long q) {
+    for (long i = 1; i <= q; ++i) {
+      if (isMultiple(a, b, i))
+        return i;
+    }
+    return 0;
   }
 
 }

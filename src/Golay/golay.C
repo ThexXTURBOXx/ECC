@@ -7,6 +7,12 @@ using namespace std;
 
 namespace CoCoA {
 
+  /**
+   * Returns the part of the generator matrix of the Golay code of order 11 that is not the identity matrix,
+   * defined over the given ring.
+   * @param R The ring over which the matrix should be defined.
+   * @return The "non-identity-matrix-part" of the generator matrix of the Golay code of order 11.
+   */
   matrix G11Mat(const ring &R) {
     return NewDenseMat(R, {{0, 1, 1, 1, 1},
                            {1, 0, 1, 2, 2},
@@ -16,6 +22,12 @@ namespace CoCoA {
                            {1, 1, 2, 2, 1}});
   }
 
+  /**
+   * Returns the part of the generator matrix of the Golay code of order 12 that is not the identity matrix,
+   * defined over the given ring.
+   * @param R The ring over which the matrix should be defined.
+   * @return The "non-identity-matrix-part" of the generator matrix of the Golay code of order 12.
+   */
   matrix G12Mat(const ring &R) {
     const ConstMatrixView G11 = G11Mat(R);
     const RingElem O = zero(R);
@@ -24,6 +36,12 @@ namespace CoCoA {
     return NewDenseMat(ConcatHor(G11, ColMat({I, I, Z, Z, I, O})));
   }
 
+  /**
+   * Returns the part of the generator matrix of the Golay code of order 23 that is not the identity matrix,
+   * defined over the given ring.
+   * @param R The ring over which the matrix should be defined.
+   * @return The "non-identity-matrix-part" of the generator matrix of the Golay code of order 23.
+   */
   matrix G23Mat(const ring &R) {
     const RingElem O = zero(R);
     const RingElem I = one(R);
@@ -31,6 +49,12 @@ namespace CoCoA {
     return NewDenseMat(ConcatVer(circ, RowMat(vector<RingElem>(11, I))));
   }
 
+  /**
+   * Returns the part of the generator matrix of the Golay code of order 24 that is not the identity matrix,
+   * defined over the given ring.
+   * @param R The ring over which the matrix should be defined.
+   * @return The "non-identity-matrix-part" of the generator matrix of the Golay code of order 24.
+   */
   matrix G24Mat(const ring &R) {
     const matrix G23 = G23Mat(R);
     return NewDenseMat(ConcatHor(G23,
@@ -69,15 +93,35 @@ namespace CoCoA {
     return linEncode(gol.G, w);
   }
 
+  /**
+   * Decodes the given word using the given {@link Golay} code which is expected to be of order 12.
+   * @param gol The {@link Golay} code to use
+   * @param w The word to decode
+   * @return The decoded word
+   */
   matrix decodeG12(const Golay &gol, const matrix &w) {
     CoCoA_THROW_ERROR(ERR::NYI, __func__);
   }
 
+  /**
+   * Decodes the given word using the given {@link Golay} code which is expected to be of order 11.
+   * @param gol The {@link Golay} code to use
+   * @param w The word to decode
+   * @return The decoded word
+   */
   matrix decodeG11(const Golay &gol, const matrix &w) {
     CoCoA_THROW_ERROR(ERR::NYI, __func__);
   }
 
   // See D.G. Hoffman
+  /**
+   * Decodes the given word using the given {@link Golay} code which is expected to be of order 24.
+   * @param gol The {@link Golay} code to use
+   * @param w The word to decode
+   * @return The decoded word
+   * @see Hankerson, D. C., Hoffman, G., Leonard, D. A., Lindner, C. C., Phelps, K. T., Rodger, C. A., Wall, J. R.
+   * (2000). Coding theory and cryptography: the essentials
+   */
   matrix decodeG24(const Golay &gol, const matrix &w) {
     const ConstMatrixView S = w * transpose(gol.GExt);
     if (wt(S) <= 3)
@@ -102,6 +146,13 @@ namespace CoCoA {
     CoCoA_THROW_ERROR("Cannot decode!", "Golay");
   }
 
+  /**
+   * Decodes the given word using the given {@link Golay} code which is expected to be of order 23.
+   * @param gol The {@link Golay} code to use
+   * @param w The word to decode
+   * @return The decoded word
+   * @see {@link decodeG24}
+   */
   matrix decodeG23(const Golay &gol, const matrix &w) {
     const matrix w24 = NewDenseMat(ConcatHor(w, RowMat({RingElem(gol.R, IsEven(wt(w)) ? 1:0)})));
 

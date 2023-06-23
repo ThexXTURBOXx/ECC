@@ -9,6 +9,8 @@ namespace CoCoA {
 
   /**
    * Holds the parameters of a BCH code.
+   * @see Hocquenghem, A. (1959). Codes correcteurs d'erreurs
+   * @see Bose, R. C., & Ray-Chaudhuri, D. K. (1960). On a class of error correcting binary group codes
    */
   struct BCH {
     /**
