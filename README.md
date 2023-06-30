@@ -4,7 +4,7 @@ Error correction code implementations in CoCoALib
 
 ## Setup (tested using CygWin and Ubuntu)
 
-1. Download the [CoCoALib](https://cocoa.dima.unige.it/cocoa/cocoalib/) source code (tested with `0.99815`, snapshots
+1. Download the [CoCoALib](https://cocoa.dima.unige.it/cocoa/cocoalib/) source code (tested with `0.99818`, snapshots
    available [here](https://cocoa.dima.unige.it/cocoa/cocoalib/snapshot.shtml))
 2. Extract the archive into `cocoalib/`
 3. Maybe, you need to apply the patch mentioned in [Fix LaTeX errors](#fix-latex-errors)
