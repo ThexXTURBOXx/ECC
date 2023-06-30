@@ -13,7 +13,8 @@ Error correction code implementations in CoCoALib
 6. Install the latest version of [txt2tags 2.7-dev](https://txt2tags.org/) along with a compatible [Python](https://www.python.org/) version
 7. Install the CoCoALib library and header files (depending on your setup, you might need to run this as an admin): `./make_cocoalib.sh`
 8. Setup CMake using the `cmake` command and appropriate arguments
-9. Build the resulting executables using `cmake --build`
+9. If your CoCoALib version does not yet include `IsPrimitivePoly` (versions <0.99815), you need to uncomment the functions in `include/util/utils.C` and `src/util/utils.C`
+10. Build the resulting executables using `cmake --build` and appropriate arguments
 
 ## Fix LaTeX errors
 
