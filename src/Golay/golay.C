@@ -114,7 +114,6 @@ namespace CoCoA {
       CoCoA_THROW_ERROR(ERR::NYI, __func__);
     }
 
-    // See D.G. Hoffman
     /**
      * Decodes the given word using the given {@link Golay} code which is expected to be of order 24.
      * @param gol The {@link Golay} code to use
