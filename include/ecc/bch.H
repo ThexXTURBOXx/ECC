@@ -60,6 +60,11 @@ namespace CoCoA {
       const RingElem x;
 
       /**
+       * The underlying field.
+       */
+      const ring R;
+
+      /**
        * Constructs a {@link BCH} code.
        * @param q The order of the field
        * @param qn The size of the field
@@ -74,7 +79,7 @@ namespace CoCoA {
       BCH(const long q, const long qn, const long n, const long k,
           const long d, const long c, RingElem a, RingElem g, RingElem x)
           : q(q), qn(qn), n(n), k(k), d(d), c(c),
-            a(std::move(a)), g(std::move(g)), x(std::move(x)) {
+            a(std::move(a)), g(std::move(g)), x(std::move(x)), R(owner(x)) {
       }
     };
 
