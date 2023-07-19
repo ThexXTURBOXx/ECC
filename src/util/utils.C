@@ -364,7 +364,7 @@ namespace CoCoA {
     }
 
     long divide(const vector<RingElem> &a, const vector<RingElem> &b, const long q) {
-      for (long i = 1; i <= q; ++i) {
+      for (long i = 1; i < q; ++i) {
         if (isMultiple(a, b, i))
           return i;
       }
