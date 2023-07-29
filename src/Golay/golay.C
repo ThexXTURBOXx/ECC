@@ -143,7 +143,7 @@ namespace CoCoA {
           return w + ConcatHor(e(gol.R, j, one(gol.R), gol.k), SA + aj);
       }
 
-      CoCoA_THROW_ERROR("Cannot decode!", "Golay");
+      CoCoA_THROW_ERROR("Cannot decode!", __func__);
     }
 
     /**

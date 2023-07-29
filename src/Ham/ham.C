@@ -78,7 +78,7 @@ namespace CoCoA {
         if (b != 0)
           return w - e(ham.R, i, RingElem(ham.R, b), ham.n);
       }
-      CoCoA_THROW_ERROR("Cannot decode!", "Ham");
+      CoCoA_THROW_ERROR("Cannot decode!", __func__);
     }
 
   }

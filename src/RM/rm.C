@@ -155,7 +155,7 @@ namespace CoCoA {
 
     matrix decodeRM(const RM &rm, matrix w) {
       matrix word = NewDenseMat(rm.R, 1, rm.k);
-      RingElem scalarProductTemp = zero(rm.R);
+      RingElem dotProductTemp = zero(rm.R);
       for (long degree = rm.r; degree >= 0; --degree) {
         long upperR = rm.ribd[degree];
         long lowerR = degree == 0 ? 0:rm.ribd[degree - 1] + 1;
@@ -165,28 +165,28 @@ namespace CoCoA {
           long zeros = 0;
 
           for (const auto &vrow: rm.votingRows[pos]) {
-            scalarProductTemp = zero(rm.R);
+            dotProductTemp = zero(rm.R);
             for (long i = 0; i < rm.n; ++i) {
-              scalarProductTemp += w(0, i) * vrow[i];
+              dotProductTemp += w(0, i) * vrow[i];
             }
-            if (IsZero(scalarProductTemp))
+            if (IsZero(dotProductTemp))
               ++zeros;
             else
               ++ones;
           }
 
           if (ones == zeros)
-            CoCoA_THROW_ERROR("Cannot decode!", "RM");
+            CoCoA_THROW_ERROR("Cannot decode!", __func__);
 
           SetEntry(word, 0, pos, zeros > ones ? 0:1);
         }
 
         for (long i = 0; i < rm.n; ++i) {
-          scalarProductTemp = zero(rm.R);
+          dotProductTemp = zero(rm.R);
           for (long j = lowerR; j <= upperR; ++j) {
-            scalarProductTemp += word(0, j) * rm.G(j, i);
+            dotProductTemp += word(0, j) * rm.G(j, i);
           }
-          SetEntry(w, 0, i, w(0, i) + scalarProductTemp);
+          SetEntry(w, 0, i, w(0, i) + dotProductTemp);
         }
       }
       return word;

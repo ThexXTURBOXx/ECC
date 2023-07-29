@@ -63,7 +63,7 @@ namespace CoCoA {
         M->myResize(v, v);
         zd = IsZeroDet(M);
         if (zd && v == 1)
-          CoCoA_THROW_ERROR("Cannot decode!", "BCH");
+          CoCoA_THROW_ERROR("Cannot decode!", __func__);
         --v;
       } while (zd && v != 0);
 

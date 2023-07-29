@@ -44,11 +44,12 @@ namespace CoCoA {
       long v = 1;
       ideal I({one(Px)});
       do {
+        vector<RingElem> S;
+
         if (q == 2) {
           const ring Rx = NewPolyRing(P, NewSymbols(v), xel);
           const RingElem &Rx1 = one(Rx);
 
-          vector<RingElem> S;
           for (long j = 0; j < js; ++j) {
             RingElem e = RingElem(Rx, -s[j]);
             for (long m = 0; m < v; ++m) {
@@ -59,13 +60,10 @@ namespace CoCoA {
           for (long m = 0; m < v; ++m) {
             S.push_back(IndetPower(Rx, m, n) - Rx1);
           }
-
-          I = ideal(S);
         } else {
           const ring Rx = NewPolyRing(P, NewSymbols(2 * v), xel);
           const RingElem &Rx1 = one(Rx);
 
-          vector<RingElem> S;
           for (long j = 0; j < js; ++j) {
             RingElem e = RingElem(Rx, -s[j]);
             for (long m = 0; m < v; ++m) {
@@ -77,9 +75,9 @@ namespace CoCoA {
             S.push_back(IndetPower(Rx, v + m, q) - indet(Rx, v + m));
             S.push_back(IndetPower(Rx, m, n) - Rx1);
           }
-
-          I = ideal(S);
         }
+
+        I = ideal(S);
         ++v;
       } while (IsOne(I));
 
@@ -91,32 +89,31 @@ namespace CoCoA {
 
       RingElem f = zero(Px);
       if (deg(gx1) > v)
-        CoCoA_THROW_ERROR("Cannot decode!", "GroebnerDecode");
-      else {
-        const vector<long> roots = ChienSearch(gx1, aP, qn, x1);
-        if (q == 2) {
-          for (auto &j: roots) {
-            f += power(x, j);
-          }
-        } else {
-          vector<RingElem> evalPts;
-          for (long i = 0; i < v - 1; ++i) {
-            evalPts.push_back(power(aR, roots[i]));
-          }
-          for (long i = v - 1; i < 2 * (v - 1); ++i) {
-            evalPts.push_back(indet(Rx, i));
-          }
-          const RingHom eval = PolyAlgebraHom(Rx, Rx, evalPts);
-          for_each(G.begin(), G.end(),
-                   [eval](auto &g) {
-                     g = eval(g);
-                   });
-          // TODO: Do we need another reduction here, i.e., G = ReducedGBasis(ideal(G)); ???
-          for (long m = 0; m < v - 1; ++m) {
-            const long r = ChienSearchSingleRoot(getUniPoly(G, (v - 1) + m, one(Rx)),
-                                                 aR, qn, indet(Rx, (v - 1) + m));
-            f += power(a, r) * power(x, roots[m]);
-          }
+        CoCoA_THROW_ERROR("Cannot decode!", __func__);
+
+      const vector<long> roots = ChienSearch(gx1, aP, qn, x1);
+      if (q == 2) {
+        for (auto &j: roots) {
+          f += power(x, j);
+        }
+      } else {
+        vector<RingElem> evalPts;
+        for (long i = 0; i < v - 1; ++i) {
+          evalPts.push_back(power(aR, roots[i]));
+        }
+        for (long i = v - 1; i < 2 * (v - 1); ++i) {
+          evalPts.push_back(indet(Rx, i));
+        }
+        const RingHom eval = PolyAlgebraHom(Rx, Rx, evalPts);
+        for_each(G.begin(), G.end(),
+                 [eval](auto &g) {
+                   g = eval(g);
+                 });
+        // TODO: Do we need another reduction here, i.e., G = ReducedGBasis(ideal(G)); ???
+        for (long m = 0; m < v - 1; ++m) {
+          const long r = ChienSearchSingleRoot(getUniPoly(G, (v - 1) + m, one(Rx)),
+                                               aR, qn, indet(Rx, (v - 1) + m));
+          f += power(a, r) * power(x, roots[m]);
         }
       }
 

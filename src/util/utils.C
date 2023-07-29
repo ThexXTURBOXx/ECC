@@ -265,7 +265,7 @@ namespace CoCoA {
       BigInt b = binomial(n, k);
       long ret;
       if (!IsConvertible(ret, b))
-        CoCoA_THROW_ERROR(ERR::ArgTooBig, "binom");
+        CoCoA_THROW_ERROR(ERR::ArgTooBig, __func__);
       return ret;
     }
 
