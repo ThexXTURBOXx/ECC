@@ -5,7 +5,7 @@ Error correction code implementations in CoCoALib
 ## Purpose of this repository
 
 This is the accompanying code for [Nico Mexis](https://nmexis.me/)' master's thesis "A Comprehensive Comparison of Fuzzy
-Extractor Schemes Employing Different Error Correction Codes", available [here](TODO).
+Extractor Schemes Employing Different Error Correction Codes", available [here](https://doi.org/10.15475/ccfesedecc.2023).
 
 ## Setup (tested using CygWin and Ubuntu)
 
