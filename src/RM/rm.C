@@ -8,7 +8,6 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
     namespace { /* anonymous */
       /**
        * Calculates the row which corresponds to the variable `x_i` of the code.
@@ -40,8 +39,8 @@ namespace CoCoA {
        * @param off The offset of the current monomial
        * @return The list of all rows over the monomials in the given set
        */
-      vector<vector<RingElem>>
-      generateAllRows(const ring &R, const long m, const vector<long> &S, const long off) { // NOLINT(misc-no-recursion)
+      vector<vector<RingElem>> generateAllRows(const ring& R, const long m, const vector<long>& S, const long off) {
+        // NOLINT(misc-no-recursion)
         const long size = SmallPower(2, m);
         if (off == S.size())
           return {vector<RingElem>(size, one(R))};
@@ -73,7 +72,7 @@ namespace CoCoA {
        * @param S The set of monomials
        * @return The list of all rows over the monomials in the given set
        */
-      vector<vector<RingElem>> generateAllRows(const ring &R, const long m, const vector<long> &S) {
+      vector<vector<RingElem>> generateAllRows(const ring& R, const long m, const vector<long>& S) {
         return generateAllRows(R, m, S, 0);
       }
     }
@@ -89,17 +88,17 @@ namespace CoCoA {
       return ret;
     }
 
-    vector<vector<RingElem>> RM::genXrows(const ring &R, const long m) {
+    vector<vector<RingElem>> RM::genXrows(const ring& R, const long m) {
       vector<vector<RingElem>> ret(m);
-      const RingElem &zeroR = zero(R);
-      const RingElem &oneR = one(R);
+      const RingElem& zeroR = zero(R);
+      const RingElem& oneR = one(R);
       const long size = SmallPower(2, m);
       for (long i = 0; i < m; ++i)
         ret[i] = constructVector(zeroR, oneR, size, m, i);
       return ret;
     }
 
-    matrix RM::genG(const ring &R, const long r, const long m, const vector<vector<RingElem>> &xrows) {
+    matrix RM::genG(const ring& R, const long r, const long m, const vector<vector<RingElem>>& xrows) {
       vector<long> elems(m);
       iota(begin(elems), end(elems), 0);
 
@@ -110,9 +109,9 @@ namespace CoCoA {
         Ss.clear();
         subsets(elems, s, Ss);
 
-        for (const auto &S: Ss) {
+        for (const auto& S : Ss) {
           vector<RingElem> ret(cols, one(R));
-          for (const auto &i: S)
+          for (const auto& i : S)
             for (long j = 0; j < cols; ++j)
               ret[j] *= xrows[i][j];
           G = ConcatVer(G, NewDenseMat(RowMat(ret)));
@@ -121,7 +120,7 @@ namespace CoCoA {
       return NewDenseMat(G);
     }
 
-    vector<vector<vector<RingElem>>> RM::genVotingRows(const ring &R, const long r, const long m) {
+    vector<vector<vector<RingElem>>> RM::genVotingRows(const ring& R, const long r, const long m) {
       vector<long> elems(m);
       iota(begin(elems), end(elems), 0);
 
@@ -131,7 +130,7 @@ namespace CoCoA {
         Ss.clear();
         subsets(elems, s, Ss);
 
-        for (const auto &S: Ss) {
+        for (const auto& S : Ss) {
           vector<long> is;
           for (long i = 0; i < m; ++i)
             if (find(S.cbegin(), S.cend(), i) == S.cend())
@@ -149,22 +148,22 @@ namespace CoCoA {
       return ribd;
     }
 
-    matrix encodeRM(const RM &rm, const matrix &w) {
+    matrix encodeRM(const RM& rm, const matrix& w) {
       return linEncode(rm.G, w);
     }
 
-    matrix decodeRM(const RM &rm, matrix w) {
+    matrix decodeRM(const RM& rm, matrix w) {
       matrix word = NewDenseMat(rm.R, 1, rm.k);
       RingElem dotProductTemp = zero(rm.R);
       for (long degree = rm.r; degree >= 0; --degree) {
         long upperR = rm.ribd[degree];
-        long lowerR = degree == 0 ? 0:rm.ribd[degree - 1] + 1;
+        long lowerR = degree == 0 ? 0 : rm.ribd[degree - 1] + 1;
 
         for (long pos = lowerR; pos <= upperR; ++pos) {
           long ones = 0;
           long zeros = 0;
 
-          for (const auto &vrow: rm.votingRows[pos]) {
+          for (const auto& vrow : rm.votingRows[pos]) {
             dotProductTemp = zero(rm.R);
             for (long i = 0; i < rm.n; ++i) {
               dotProductTemp += w(0, i) * vrow[i];
@@ -178,7 +177,7 @@ namespace CoCoA {
           if (ones == zeros)
             CoCoA_THROW_ERROR("Cannot decode!", __func__);
 
-          SetEntry(word, 0, pos, zeros > ones ? 0:1);
+          SetEntry(word, 0, pos, zeros > ones ? 0 : 1);
         }
 
         for (long i = 0; i < rm.n; ++i) {
@@ -191,6 +190,5 @@ namespace CoCoA {
       }
       return word;
     }
-
   }
 }

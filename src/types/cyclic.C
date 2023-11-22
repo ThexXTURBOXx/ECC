@@ -6,7 +6,6 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
     RingElem dualPoly(ConstRefRingElem g, const long n) {
       const ring P = owner(g);
       const RingElem h = (IndetPower(P, UnivariateIndetIndex(g), n) - one(P)) / g;
@@ -21,8 +20,8 @@ namespace CoCoA {
 
     RingElem decodeCyclicGroebner(ConstRefRingElem g, ConstRefRingElem p, ConstRefRingElem x, ConstRefRingElem a,
                                   const long q, const long n, const long qn) {
-      const ring &Px = owner(p);
-      const ring &P = CoeffRing(Px);
+      const ring& Px = owner(p);
+      const ring& P = CoeffRing(Px);
       const vector<long> J = ChienSearch(g, a, qn, x); // Complete defining set
       const size_t js = J.size();
       const RingElem aP = EvalHom(Px, one(P))(a);
@@ -36,7 +35,7 @@ namespace CoCoA {
 
       // All defining syndromes zero -> no error
       if (all_of(s.cbegin(), s.cend(),
-                 [](const RingElem &r) {
+                 [](const RingElem& r) {
                    return IsZero(r);
                  }))
         return p;
@@ -48,7 +47,7 @@ namespace CoCoA {
 
         if (q == 2) {
           const ring Rx = NewPolyRing(P, NewSymbols(v), xel);
-          const RingElem &Rx1 = one(Rx);
+          const RingElem& Rx1 = one(Rx);
 
           for (long j = 0; j < js; ++j) {
             RingElem e = RingElem(Rx, -s[j]);
@@ -62,7 +61,7 @@ namespace CoCoA {
           }
         } else {
           const ring Rx = NewPolyRing(P, NewSymbols(2 * v), xel);
-          const RingElem &Rx1 = one(Rx);
+          const RingElem& Rx1 = one(Rx);
 
           for (long j = 0; j < js; ++j) {
             RingElem e = RingElem(Rx, -s[j]);
@@ -93,7 +92,7 @@ namespace CoCoA {
 
       const vector<long> roots = ChienSearch(gx1, aP, qn, x1);
       if (q == 2) {
-        for (auto &j: roots) {
+        for (auto& j : roots) {
           f += power(x, j);
         }
       } else {
@@ -106,7 +105,7 @@ namespace CoCoA {
         }
         const RingHom eval = PolyAlgebraHom(Rx, Rx, evalPts);
         for_each(G.begin(), G.end(),
-                 [eval](auto &g) {
+                 [eval](auto& g) {
                    g = eval(g);
                  });
         // TODO: Do we need another reduction here, i.e., G = ReducedGBasis(ideal(G)); ???
@@ -119,6 +118,5 @@ namespace CoCoA {
 
       return p - f;
     }
-
   }
 }

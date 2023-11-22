@@ -7,7 +7,6 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
     /**
      * Provides a comparison function for the columns of the parity check matrix of a Hamming code. First compares by
      * weight, then lexicographically.
@@ -15,7 +14,7 @@ namespace CoCoA {
      * @param b The second column
      * @return True if the first column is smaller than the second column
      */
-    bool sortHam(const vector<long> &a, const vector<long> &b) {
+    bool sortHam(const vector<long>& a, const vector<long>& b) {
       const long wa = wt(a);
       const long wb = wt(b);
       if (wa != wb)
@@ -29,7 +28,7 @@ namespace CoCoA {
       return false;
     }
 
-    matrix hamH(const ring &R, const long r, const long q) {
+    matrix hamH(const ring& R, const long r, const long q) {
       vector<long> elems(q);
       iota(begin(elems), end(elems), 0);
 
@@ -37,21 +36,20 @@ namespace CoCoA {
       sort(tup.begin(), tup.end(), sortHam);
 
       vector<vector<RingElem>> cols;
-      for (const auto &next: tup) {
+      for (const auto& next : tup) {
         if (any_of(next.cbegin(), next.cend(),
-                   [](const auto &c) {
+                   [](const auto& c) {
                      return c != 0;
                    })) {
-
           vector<RingElem> n;
           n.reserve(r);
           transform(next.cbegin(), next.cend(), back_inserter(n),
-                    [R](const auto &t) {
+                    [R](const auto& t) {
                       return RingElem(R, t);
                     });
 
           if (none_of(cols.cbegin(), cols.cend(),
-                      [q, n](const auto &c) {
+                      [q, n](const auto& c) {
                         return divide(n, c, q);
                       })) {
             cols.push_back(n);
@@ -63,11 +61,11 @@ namespace CoCoA {
       return NewDenseMatTranspose(R, cols);
     }
 
-    matrix encodeHam(const Ham &ham, const matrix &w) {
+    matrix encodeHam(const Ham& ham, const matrix& w) {
       return linEncode(ham.G, w);
     }
 
-    matrix decodeHam(const Ham &ham, const matrix &w) {
+    matrix decodeHam(const Ham& ham, const matrix& w) {
       const matrix S = ham.H * transpose(w);
       if (IsZero(S))
         return w;
@@ -80,6 +78,5 @@ namespace CoCoA {
       }
       CoCoA_THROW_ERROR("Cannot decode!", __func__);
     }
-
   }
 }

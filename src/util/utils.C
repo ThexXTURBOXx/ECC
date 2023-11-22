@@ -6,9 +6,8 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
-    template<class T>
-    T getOr(const vector<T> &vec, const size_t i, T defaultVal) {
+    template <class T>
+    T getOr(const vector<T>& vec, const size_t i, T defaultVal) {
       if (i >= vec.size())
         return defaultVal;
       return vec[i];
@@ -18,7 +17,7 @@ namespace CoCoA {
      * Explicitly instantiate template function to avoid linker errors.
      * @return {@link getOr}
      */
-    template RingElem getOr<RingElem>(const vector<RingElem> &, const size_t, RingElem);
+    template RingElem getOr<RingElem>(const vector<RingElem>&, const size_t, RingElem);
 
     static int parseNum(const char c) {
       if (c >= '0' && c <= '9')
@@ -32,21 +31,21 @@ namespace CoCoA {
 
     char toChar(const long i) {
       if (i >= 0 && i <= 9)
-        return (char) ('0' + i);
+        return (char)('0' + i);
       if (i >= 10 && i <= 35)
-        return (char) ('A' + (i - 10));
+        return (char)('A' + (i - 10));
       CoCoA_THROW_ERROR("Invalid number", __func__);
     }
 
-    RingElem toPolynomial(const string &str, ConstRefRingElem x) {
-      const long k = (long) str.size();
+    RingElem toPolynomial(const string& str, ConstRefRingElem x) {
+      const long k = (long)str.size();
       RingElem poly = zero(owner(x));
       for (long i = 0; i < k; ++i)
         poly += parseNum(str[i]) * power(x, k - i - 1);
       return poly;
     }
 
-    RingElem toPolynomial(const matrix &mat, ConstRefRingElem x) {
+    RingElem toPolynomial(const matrix& mat, ConstRefRingElem x) {
       const long k = NumCols(mat);
       RingElem poly = zero(owner(x));
       for (long i = 0; i < k; ++i)
@@ -54,8 +53,8 @@ namespace CoCoA {
       return poly;
     }
 
-    matrix toMatrix(const string &str, const ring &R) {
-      const long k = (long) str.size();
+    matrix toMatrix(const string& str, const ring& R) {
+      const long k = (long)str.size();
       matrix m = NewDenseMat(R, 1, k);
       for (long i = 0; i < k; ++i) {
         SetEntry(m, 0, i, parseNum(str[i]));
@@ -89,7 +88,7 @@ namespace CoCoA {
       return str;
     }
 
-    string toString(const matrix &m) {
+    string toString(const matrix& m) {
       const long n = NumCols(m);
       string str;
       long buf;
@@ -101,8 +100,8 @@ namespace CoCoA {
       return str;
     }
 
-    template<class T>
-    vector<vector<T>> tuples(const vector<T> &set, const long tupleSize) {
+    template <class T>
+    vector<vector<T>> tuples(const vector<T>& set, const long tupleSize) {
       vector<vector<T>> result;
 
       const long maxValue = SmallPower(set.size(), tupleSize);
@@ -126,13 +125,13 @@ namespace CoCoA {
      * Explicitly instantiate template function to avoid linker errors.
      * @return {@link tuples}
      */
-    template vector<vector<long>> tuples<long>(const vector<long> &, const long);
+    template vector<vector<long>> tuples<long>(const vector<long>&, const long);
 
     /**
      * Explicitly instantiate template function to avoid linker errors.
      * @return {@link tuples}
      */
-    template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem> &, const long);
+    template vector<vector<RingElem>> tuples<RingElem>(const vector<RingElem>&, const long);
 
     namespace { /* anonymous */
       /**
@@ -146,9 +145,9 @@ namespace CoCoA {
        * @param bl The buffer for the set of all subsets
        * @see This is an improved version of `examples/ex-MVT-Simplicial.C` in CoCoALib
        */
-      template<class T>
-      void subsetsInternal(const vector<T> &arr, const int size, const long left, // NOLINT(misc-no-recursion)
-                           const int index, vector<T> &l, vector<vector<T>> &bl) {
+      template <class T>
+      void subsetsInternal(const vector<T>& arr, const int size, const long left, // NOLINT(misc-no-recursion)
+                           const int index, vector<T>& l, vector<vector<T>>& bl) {
         if (left == 0) {
           bl.push_back(l);
           return;
@@ -161,8 +160,8 @@ namespace CoCoA {
       }
     }
 
-    template<class T>
-    void subsets(const vector<T> &set, const long setSize, vector<vector<T>> &ret) {
+    template <class T>
+    void subsets(const vector<T>& set, const long setSize, vector<vector<T>>& ret) {
       vector<T> buf;
       return subsetsInternal(set, set.size(), setSize, 0, buf, ret);
     }
@@ -170,22 +169,22 @@ namespace CoCoA {
     /**
      * Explicitly instantiate template function to avoid linker errors.
      */
-    template void subsets<long>(const vector<long> &, const long, vector<vector<long>> &);
+    template void subsets<long>(const vector<long>&, const long, vector<vector<long>>&);
 
     /**
      * Explicitly instantiate template function to avoid linker errors.
      */
-    template void subsets<RingElem>(const vector<RingElem> &, const long, vector<vector<RingElem>> &);
+    template void subsets<RingElem>(const vector<RingElem>&, const long, vector<vector<RingElem>>&);
 
-    matrix e(const ring &R, const long i, const RingElem &b, const long n) {
+    matrix e(const ring& R, const long i, const RingElem& b, const long n) {
       matrix m = NewDenseMat(ZeroMat(R, 1, n));
       SetEntry(m, 0, i, b);
       return m;
     }
 
-    template<class T>
-    vector<T> cycShift(const vector<T> &vec, const long s) {
-      const long len = (long) vec.size();
+    template <class T>
+    vector<T> cycShift(const vector<T>& vec, const long s) {
+      const long len = (long)vec.size();
       vector<T> ret(len);
       for (long i = 0; i < len; ++i) {
         ret[(i + s + len) % len] = vec[i];
@@ -193,8 +192,8 @@ namespace CoCoA {
       return ret;
     }
 
-    matrix revCirculantMatrix(const vector<RingElem> &firstRow) {
-      const long len = (long) firstRow.size();
+    matrix revCirculantMatrix(const vector<RingElem>& firstRow) {
+      const long len = (long)firstRow.size();
       vector<vector<RingElem>> m(len);
       m[0] = firstRow;
       for (long i = 1; i < len; ++i) {
@@ -203,14 +202,14 @@ namespace CoCoA {
       return NewDenseMat(owner(firstRow[0]), m);
     }
 
-    long wt(const vector<long> &v) {
+    long wt(const vector<long>& v) {
       return accumulate(v.cbegin(), v.cend(), 0L,
                         [](const long a, const long b) {
                           return a + sign(b);
                         });
     }
 
-    long wt(const ConstMatrixView &m) {
+    long wt(const ConstMatrixView& m) {
       long cols = NumCols(m);
       long rows = NumRows(m);
       long ret = 0;
@@ -225,7 +224,7 @@ namespace CoCoA {
     }
 
     vector<long> ChienSearch(ConstRefRingElem f, ConstRefRingElem a, const long qn, ConstRefRingElem x) {
-      const ring &R = owner(f);
+      const ring& R = owner(f);
       const RingElem z = zero(R);
       const long n = deg(f);
       vector<long> rootPowers = {};
@@ -240,7 +239,7 @@ namespace CoCoA {
     }
 
     long ChienSearchSingleRoot(ConstRefRingElem f, ConstRefRingElem a, const long qn, ConstRefRingElem x) {
-      const ring &R = owner(f);
+      const ring& R = owner(f);
       const RingElem z = zero(R);
       const long n = deg(f);
       vector<RingElem> b = CoeffVecWRT(f, x);
@@ -253,8 +252,8 @@ namespace CoCoA {
       CoCoA_THROW_ERROR("Polynomial does not have a root", __func__);
     }
 
-    RingElem getUniPoly(const vector<RingElem> &G, const long IndetIndex, ConstRefRingElem fallback) {
-      for (auto &g: G) {
+    RingElem getUniPoly(const vector<RingElem>& G, const long IndetIndex, ConstRefRingElem fallback) {
+      for (auto& g : G) {
         if (!IsConstant(g) && UnivariateIndetIndex(g) == IndetIndex)
           return g;
       }
@@ -269,7 +268,7 @@ namespace CoCoA {
       return ret;
     }
 
-    long GetLength(const matrix &m) {
+    long GetLength(const matrix& m) {
       long c = m->myNumCols();
       long r = m->myNumRows();
       return max(c, r);
@@ -317,14 +316,14 @@ namespace CoCoA {
     }
     */
 
-    RingElem BruteForcePrimPoly(const ring &Px, const long n, const long IndetIndex) {
-      const char *const FnName = "BruteForcePrimPoly";
+    RingElem BruteForcePrimPoly(const ring& Px, const long n, const long IndetIndex) {
+      const char* const FnName = "BruteForcePrimPoly";
 
       if (n < 1)
         CoCoA_THROW_ERROR(ERR::BadArg, FnName);
       if (!IsSparsePolyRing(Px))
         CoCoA_THROW_ERROR(ERR::NotSparsePolyRing, FnName);
-      const ring &P = CoeffRing(Px);
+      const ring& P = CoeffRing(Px);
       if (!IsFiniteField(P) || !IsQuotientRing(P) || !IsZZ(BaseRing(P))) // TODO: Does that only allow ZZ/(p)?
         CoCoA_THROW_ERROR(ERR::BadRing, FnName);
 
@@ -355,7 +354,7 @@ namespace CoCoA {
       }
     }
 
-    bool isMultiple(const vector<RingElem> &a, const vector<RingElem> &b, const long c) {
+    bool isMultiple(const vector<RingElem>& a, const vector<RingElem>& b, const long c) {
       for (size_t i = 0; i < a.size(); ++i) {
         if (a[i] != c * b[i])
           return false;
@@ -363,13 +362,12 @@ namespace CoCoA {
       return true;
     }
 
-    long divide(const vector<RingElem> &a, const vector<RingElem> &b, const long q) {
+    long divide(const vector<RingElem>& a, const vector<RingElem>& b, const long q) {
       for (long i = 1; i < q; ++i) {
         if (isMultiple(a, b, i))
           return i;
       }
       return 0;
     }
-
   }
 }

@@ -9,11 +9,10 @@ const string description = "This file provides simple examples for this software
 
 namespace CoCoA {
   namespace ECC {
-
     // Forward decl -- start
-    void exampleECC(int argc, const char *argv[]);
+    void exampleECC(int argc, const char* argv[]);
 
-    void exampleFuzzy(int argc, const char *argv[]);
+    void exampleFuzzy(int argc, const char* argv[]);
     // Forward decl -- end
 
     /**
@@ -21,7 +20,7 @@ namespace CoCoA {
      * @param argc The number of arguments
      * @param argv The arguments
      */
-    void program(const int argc, const char *argv[]) {
+    void program(const int argc, const char* argv[]) {
       GlobalManager CoCoAFoundations(UseNonNegResidues);
       SignalWatcher MonitorInterrupt(SIGINT); // you must also call CheckForInterrupt every so often
 
@@ -40,7 +39,6 @@ namespace CoCoA {
         cout << "" << endl;
       }
     }
-
   }
 }
 
@@ -50,24 +48,23 @@ namespace CoCoA {
  * @param argv The arguments
  * @return The exit code
  */
-int main(const int argc, const char *argv[]) {
+int main(const int argc, const char* argv[]) {
   try {
     CoCoA::ECC::program(argc, argv);
     return 0;
-  }
-  catch (const CoCoA::InterruptReceived &intr) {
+  } catch (const CoCoA::InterruptReceived& intr) {
     cerr << endl
-         << "------------------------------" << endl
-         << ">>>  CoCoALib interrupted  <<<" << endl
-         << "------------------------------" << endl
-         << "-->>  " << intr << "  <<--" << endl;
+      << "------------------------------" << endl
+      << ">>>  CoCoALib interrupted  <<<" << endl
+      << "------------------------------" << endl
+      << "-->>  " << intr << "  <<--" << endl;
     return 2;
   }
-  catch (const CoCoA::ErrorInfo &err) {
+  catch (const CoCoA::ErrorInfo& err) {
     cerr << "***ERROR***  UNCAUGHT CoCoA error";
     ANNOUNCE(cerr, err);
   }
-  catch (const std::exception &exc) {
+  catch (const std::exception& exc) {
     cerr << "***ERROR***  UNCAUGHT std::exception: " << exc.what() << endl;
   }
   catch (...) {

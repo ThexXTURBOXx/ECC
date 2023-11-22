@@ -17,13 +17,12 @@ const string description = "This file provides simple examples of ECCs.\n";
 
 namespace CoCoA {
   namespace ECC {
-
     /**
      * Tests the {@link BCH} code.
      */
     void testBCHECC() {
       cout << "========================== BCH ==========================" << endl
-           << endl;
+        << endl;
 
       // Setup (BCH code from QR-codes)
       long q = 2;
@@ -168,7 +167,7 @@ namespace CoCoA {
      */
     void testGolayECC() {
       cout << "========================== Golay ==========================" << endl
-           << endl;
+        << endl;
 
       const Golay g11(11);
       cout << "[" << g11.n << "," << g11.k << "," << g11.d << "]" << endl;
@@ -224,7 +223,7 @@ namespace CoCoA {
      */
     void testHamECC() {
       cout << "========================== Ham ==========================" << endl
-           << endl;
+        << endl;
 
       const Ham ham(3, 2);
       cout << ham.H << endl;
@@ -267,7 +266,7 @@ namespace CoCoA {
      */
     void testRMECC() {
       cout << "========================== RM ==========================" << endl
-           << endl;
+        << endl;
 
       RM rm(2, 4);
       const matrix w = toMatrix("10011011001", rm.R);
@@ -295,14 +294,14 @@ namespace CoCoA {
      * @param argc The number of arguments
      * @param argv The arguments
      */
-    void exampleECC(const int argc, const char *argv[]) {
+    void exampleECC(const int argc, const char* argv[]) {
       bool all = false, bch = false, golay = false, ham = false, rm = false;
 
       if (argc <= 0) {
         all = true;
       } else {
         for (int i = 0; i < argc; ++i) {
-          const char *arg = argv[i];
+          const char* arg = argv[i];
           if (strcmp(arg, "bch") == 0) {
             bch = true;
           } else if (strcmp(arg, "ham") == 0) {
@@ -317,29 +316,28 @@ namespace CoCoA {
 
       if (all || bch) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testBCHECC();
       }
       if (all || golay) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testGolayECC();
       }
       if (all || ham) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testHamECC();
       }
       if (all || rm) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testRMECC();
       }
     }
-
   }
 }

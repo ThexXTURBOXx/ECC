@@ -7,9 +7,8 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
-    BCH
-    constructBCH(const long q, const long d, const long c, const string &prim, const string &alpha, const string &x) {
+    BCH constructBCH(const long q, const long d, const long c, const string& prim, const string& alpha,
+                     const string& x) {
       // F_(q^m)[x]
       const ring P = NewZZmod(q);
       const PolyRing Px = NewPolyRing(P, symbols(alpha));
@@ -27,7 +26,7 @@ namespace CoCoA {
       g = PolyRingHom(Px, Rx, ChainCanonicalHom(P, Rx), {indet})(g);
       a = RingElem(Rx, alpha);
       const long qn = SmallPower(q, deg(primPoly));
-      const long n = qn - 1; // Assume primitive BCH code, length of codewords in the code
+      const long n = qn - 1;     // Assume primitive BCH code, length of codewords in the code
       const long k = n - deg(g); // Amount of information bits in codeword (input length)
 
       return {q, qn, n, k, d, c, a, g, indet};
@@ -43,11 +42,11 @@ namespace CoCoA {
      * @see Gorenstein, D., Peterson, W. W., & Zierler, N. (1960). Two-error correcting Bose-Chaudhuri codes are
      * quasi-perfect
      */
-    RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x, const vector<RingElem> &s, long v) {
-      const ring &Px = owner(p);
+    RingElem PetersonGorensteinZierler(ConstRefRingElem p, ConstRefRingElem x, const vector<RingElem>& s, long v) {
+      const ring& Px = owner(p);
 
       if (all_of(s.cbegin(), s.cend(),
-                 [](const RingElem &r) {
+                 [](const RingElem& r) {
                    return IsZero(r);
                  }))
         return zero(Px);
@@ -91,9 +90,9 @@ namespace CoCoA {
      * @return The error polynomial
      * @see Forney, G. (1965). On decoding BCH codes
      */
-    RingElem Forney(const BCH &bch, const vector<RingElem> &s, ConstRefRingElem e, const vector<long> &roots,
+    RingElem Forney(const BCH& bch, const vector<RingElem>& s, ConstRefRingElem e, const vector<long>& roots,
                     ConstRefRingElem x) {
-      const ring &Px = owner(e);
+      const ring& Px = owner(e);
 
       RingElem S = zero(Px);
       for (long i = 0; i < s.size(); ++i)
@@ -103,28 +102,28 @@ namespace CoCoA {
       const RingElem ed = deriv(e, x);
 
       RingElem ret = zero(Px);
-      for (long k: roots) {
+      for (long k : roots) {
         const long revK = (k - bch.qn + 1) % (bch.qn - 1);
         const RingHom eval = PolyAlgebraHom(
-            Px, Px, {power(bch.a, revK)});
+          Px, Px, {power(bch.a, revK)});
         ret += -power(x, -revK) * (power(bch.a, -revK) * eval(O)) / (power(bch.a, -bch.c * revK) * eval(ed));
       }
       return ret;
     }
 
-    RingElem encodeBCH(const BCH &bch, ConstRefRingElem p) {
+    RingElem encodeBCH(const BCH& bch, ConstRefRingElem p) {
       return sysEncodeCyclic(bch.g, p, bch.x, bch.n, bch.k);
     }
 
-    RingElem decodeBCH(const BCH &bch, ConstRefRingElem p) {
-      const ring &Px = owner(p);
+    RingElem decodeBCH(const BCH& bch, ConstRefRingElem p) {
+      const ring& Px = owner(p);
       const long t = (bch.d - 1) / 2;
 
       // Calculate syndromes
       vector<RingElem> s(bch.d - 1, zero(Px));
       for (long j = 0; j <= bch.d - 2; ++j) {
         const RingHom eval = PolyAlgebraHom(
-            Px, Px, {power(bch.a, bch.c + j)});
+          Px, Px, {power(bch.a, bch.c + j)});
         s[j] = eval(p);
       }
 
@@ -142,7 +141,7 @@ namespace CoCoA {
       // Calculate error values using Forney's algorithm and correct errors
       if (bch.q == 2) {
         RingElem f = p;
-        for (long j: roots)
+        for (long j : roots)
           f -= power(bch.x, -((j - bch.qn + 1) % (bch.qn - 1)));
         return f;
       } else {
@@ -150,9 +149,8 @@ namespace CoCoA {
       }
     }
 
-    RingElem decodeBCHGroebner(const BCH &bch, ConstRefRingElem p) {
+    RingElem decodeBCHGroebner(const BCH& bch, ConstRefRingElem p) {
       return decodeCyclicGroebner(bch.g, p, bch.x, bch.a, bch.q, bch.n, bch.qn);
     }
-
   }
 }

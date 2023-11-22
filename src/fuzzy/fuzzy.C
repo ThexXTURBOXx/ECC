@@ -5,9 +5,9 @@ using namespace std;
 
 namespace CoCoA {
   namespace ECC {
-
-    matrix FuzzyExtractor::generateHelperData(const matrix &w) {
-      if (helperDataSet) CoCoA_THROW_ERROR("Helper data already set", __func__);
+    matrix FuzzyExtractor::generateHelperData(const matrix& w) {
+      if (helperDataSet)
+        CoCoA_THROW_ERROR("Helper data already set", __func__);
       const long respCols = GetLength(w);
 
       matrix x = NewDenseMat(RingOf(w), 1, respCols);
@@ -28,7 +28,7 @@ namespace CoCoA {
       return strongExtract(w + x);
     }
 
-    matrix FuzzyExtractor::extract(const matrix &wd) {
+    matrix FuzzyExtractor::extract(const matrix& wd) {
       vector<long> cols(messageBits);
       iota(begin(cols), end(cols), 0);
 
@@ -43,7 +43,7 @@ namespace CoCoA {
       return strongExtract(hd.x + w);
     }
 
-    matrix FuzzyExtractor::strongExtract(const matrix &w) {
+    matrix FuzzyExtractor::strongExtract(const matrix& w) {
       long len = GetLength(w);
       uint8_t toHash[len];
       for (long i = 0; i < len; ++i)
@@ -51,7 +51,7 @@ namespace CoCoA {
 
       SHA256 sha256;
       sha256.update(toHash, len);
-      const uint8_t *hash = sha256.digest();
+      const uint8_t* hash = sha256.digest();
 
       matrix ext = NewDenseMat(RingOf(w), 1, 256);
       for (int i = 0; i < 32 / sizeof(uint8_t); ++i) {
@@ -63,6 +63,5 @@ namespace CoCoA {
       delete hash;
       return ext;
     }
-
   }
 }

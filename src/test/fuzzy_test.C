@@ -20,13 +20,12 @@ const string description = "This file provides simple examples of Fuzzy Extracto
 
 namespace CoCoA {
   namespace ECC {
-
     /**
      * Tests fuzzy extractors based on {@link BCH} codes.
      */
     void testBCHFuzzy() {
       cout << "========================== BCH ==========================" << endl
-           << endl;
+        << endl;
 
       // Setup (BCH code from QR-codes)
       long q = 2;
@@ -36,11 +35,11 @@ namespace CoCoA {
       RingElem w = toPolynomial("110111001010100", bch.x);
 
       // std::bind is also a possibility here, but Clang-Tidy complains!
-      FuzzyExtractor ext([bch](auto &&w) {
+      FuzzyExtractor ext([bch](auto&& w) {
                            return toMatrix(encodeBCH(bch, toPolynomial(std::forward<decltype(w)>(w), bch.x)),
                                            bch.n, bch.x);
                          },
-                         [bch](auto &&w) {
+                         [bch](auto&& w) {
                            return toMatrix(decodeBCH(bch, toPolynomial(std::forward<decltype(w)>(w), bch.x)),
                                            bch.n, bch.x);
                          },
@@ -58,11 +57,11 @@ namespace CoCoA {
       // Fuzzy extractor using Groebner basis decoding
 
       // std::bind is also a possibility here, but Clang-Tidy complains!
-      FuzzyExtractor ext2([bch](auto &&w) {
+      FuzzyExtractor ext2([bch](auto&& w) {
                             return toMatrix(encodeBCH(bch, toPolynomial(std::forward<decltype(w)>(w), bch.x)),
                                             bch.n, bch.x);
                           },
-                          [bch](auto &&w) {
+                          [bch](auto&& w) {
                             return toMatrix(decodeBCHGroebner(bch, toPolynomial(std::forward<decltype(w)>(w), bch.x)),
                                             bch.n, bch.x);
                           },
@@ -80,16 +79,16 @@ namespace CoCoA {
      */
     void testGolayFuzzy() {
       cout << "========================== Golay ==========================" << endl
-           << endl;
+        << endl;
 
       const Golay g24(24);
       const matrix w = toMatrix("101100101101000011101111", g24.R);
 
       // std::bind is also a possibility here, but Clang-Tidy complains!
-      FuzzyExtractor ext([g24](auto &&w) {
+      FuzzyExtractor ext([g24](auto&& w) {
                            return encodeGolay(g24, std::forward<decltype(w)>(w));
                          },
-                         [g24](auto &&w) {
+                         [g24](auto&& w) {
                            return decodeGolay(g24, std::forward<decltype(w)>(w));
                          },
                          12, 12);
@@ -108,16 +107,16 @@ namespace CoCoA {
      */
     void testHamFuzzy() {
       cout << "========================== Ham ==========================" << endl
-           << endl;
+        << endl;
 
       const Ham ham(3, 2);
       const matrix w = toMatrix("0101100", ham.R);
 
       // std::bind is also a possibility here, but Clang-Tidy complains!
-      FuzzyExtractor ext([ham](auto &&w) {
+      FuzzyExtractor ext([ham](auto&& w) {
                            return encodeHam(ham, std::forward<decltype(w)>(w));
                          },
-                         [ham](auto &&w) {
+                         [ham](auto&& w) {
                            return decodeHam(ham, std::forward<decltype(w)>(w));
                          },
                          4, 3);
@@ -135,16 +134,16 @@ namespace CoCoA {
      */
     void testRMFuzzy() {
       cout << "========================== RM ==========================" << endl
-           << endl;
+        << endl;
 
       RM rm(2, 5);
       const matrix w = toMatrix("11011100101110111001110011111011", rm.R);
 
       // std::bind is also a possibility here, but Clang-Tidy complains!
-      FuzzyExtractor ext([rm](auto &&w) {
+      FuzzyExtractor ext([rm](auto&& w) {
                            return encodeRM(rm, std::forward<decltype(w)>(w));
                          },
-                         [rm](auto &&w) {
+                         [rm](auto&& w) {
                            return decodeRM(rm, std::forward<decltype(w)>(w));
                          },
                          16, 16);
@@ -163,14 +162,14 @@ namespace CoCoA {
      * @param argc The number of arguments
      * @param argv The arguments
      */
-    void exampleFuzzy(const int argc, const char *argv[]) {
+    void exampleFuzzy(const int argc, const char* argv[]) {
       bool all = false, bch = false, golay = false, ham = false, rm = false;
 
       if (argc <= 0) {
         all = true;
       } else {
         for (int i = 0; i < argc; ++i) {
-          const char *arg = argv[i];
+          const char* arg = argv[i];
           if (strcmp(arg, "bch") == 0) {
             bch = true;
           } else if (strcmp(arg, "ham") == 0) {
@@ -185,29 +184,28 @@ namespace CoCoA {
 
       if (all || bch) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testBCHFuzzy();
       }
       if (all || golay) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testGolayFuzzy();
       }
       if (all || ham) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testHamFuzzy();
       }
       if (all || rm) {
         cout << endl
-             << endl
-             << endl;
+          << endl
+          << endl;
         testRMFuzzy();
       }
     }
-
   }
 }
