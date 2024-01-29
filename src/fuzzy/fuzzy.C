@@ -51,7 +51,7 @@ namespace CoCoA {
 
       SHA256 sha256;
       sha256.update(toHash, len);
-      const uint8_t* hash = sha256.digest();
+      const std::array<uint8_t, 32> hash = sha256.digest();
 
       matrix ext = NewDenseMat(RingOf(w), 1, 256);
       for (int i = 0; i < 32 / sizeof(uint8_t); ++i) {
@@ -60,7 +60,6 @@ namespace CoCoA {
           SetEntry(ext, 0, i * 8 + j, (num >> j) & 1);
       }
 
-      delete hash;
       return ext;
     }
   }
